@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
+
+	<title>Sun: Calulating sunrise, sunset and equinoxes</title>
+	<meta name="description" content="Calulating sunrise, sunset and equinoxes">
+	<meta name="author" content="Mathieu Davy">
+
+	<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no;">
+
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	<script type="text/javascript" src="js/jquery-1.6.4.min.js"></script>
+	<script>
+	function truncate(n) {return n | 0;}
+	</script>
+	
+	<style type="text/css" media="all">@import "css/main.css";</style>
+	<!--[if lte IE 6]><style type="text/css" media="all">@import "css/ie6.css";</style><![endif]-->
+	<!--[if IE 7]><style type="text/css" media="all">@import "css/ie7.css";</style><![endif]-->
+</head>
+<body>
+	<h1>Sun roundings tests</h1>
+<div id="box">
+	<h2>Target</h2>
+	<table>
+		<thead>
+			<tr><th>x</th><th>⌊x⌋</th><th>[x]</th><th>⌈x⌉</th><th>trunc(x)</th></tr>
+		</thead>
+		<tbody>
+			<tr><td>−5</td><td>−5</td><td>−5</td><td>−5</td><td>−5</td></tr>
+			<tr><td>−4.9</td><td>−5</td><td>−5</td><td>−4</td><td>−4</td></tr>
+			<tr><td>−4.2</td><td>−5</td><td>−4</td><td>−4</td><td>−4</td></tr>
+			<tr><td>−4</td><td>−4</td><td>−4</td><td>−4</td><td>−4</td></tr>
+			<tr><td>−0.2</td><td>−1</td><td>0</td><td>0</td><td>0</td></tr>
+			<tr><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+			<tr><td>0.2</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+			<tr><td>4</td><td>4</td><td>4</td><td>4</td><td>4</td></tr>
+			<tr><td>4.2</td><td>4</td><td>4</td><td>5</td><td>4</td></tr>
+			<tr><td>4.9</td><td>4</td><td>5</td><td>5</td><td>4</td></tr>
+			<tr><td>5</td><td>5</td><td>5</td><td>5</td><td>5</td></tr>
+		</tbody>
+	</table>
+	<h2>Computed</h2>
+	<table>
+		<thead>
+			<tr><th>x</th><th>⌊x⌋</th><th>[x]</th><th>⌈x⌉</th><th>trunc(x)</th></tr>
+		</thead>
+		<tbody>
+			<tr><td>−5</td><td><script>document.write(Math.floor(-5));</script></td><td><script>document.write(Math.round(-5));</script></td><td><script>document.write(Math.ceil(-5));</script></td><td><script>document.write(truncate(-5));</script></td></tr>
+			<tr><td>−4.9</td><td><script>document.write(Math.floor(-4.9));</script></td><td><script>document.write(Math.round(-4.9));</script></td><td><script>document.write(Math.ceil(-4.9));</script></td><td><script>document.write(truncate(-4.9));</script></td></tr>
+			<tr><td>−4.2</td><td><script>document.write(Math.floor(-4.2));</script></td><td><script>document.write(Math.round(-4.2));</script></td><td><script>document.write(Math.ceil(-4.2));</script></td><td><script>document.write(truncate(-4.2));</script></td></tr>
+			<tr><td>−4</td><td><script>document.write(Math.floor(-4));</script></td><td><script>document.write(Math.round(-4));</script></td><td><script>document.write(Math.ceil(-4));</script></td><td><script>document.write(truncate(-4));</script></td></tr>
+			<tr><td>−0.2</td><td><script>document.write(Math.floor(-0.2));</script></td><td><script>document.write(Math.round(-0.2));</script></td><td><script>document.write(Math.ceil(-0.2));</script></td><td><script>document.write(truncate(-0.2));</script></td></tr>
+			<tr><td>0</td><td><script>document.write(Math.floor(0));</script></td><td><script>document.write(Math.round(0));</script></td><td><script>document.write(Math.ceil(0));</script></td><td><script>document.write(truncate(0));</script></td></tr>
+			<tr><td>0.2</td><td><script>document.write(Math.floor(0.2));</script></td><td><script>document.write(Math.round(0.2));</script></td><td><script>document.write(Math.ceil(0.2));</script></td><td><script>document.write(truncate(0.2));</script></td></tr>
+			<tr><td>4</td><td><script>document.write(Math.floor(4));</script></td><td><script>document.write(Math.round(4));</script></td><td><script>document.write(Math.ceil(4));</script></td><td><script>document.write(truncate(4));</script></td></tr>
+			<tr><td>4.2</td><td><script>document.write(Math.floor(4.2));</script></td><td><script>document.write(Math.round(4.2));</script></td><td><script>document.write(Math.ceil(4.2));</script></td><td><script>document.write(truncate(4.2));</script></td></tr>
+			<tr><td>4.9</td><td><script>document.write(Math.floor(4.9));</script></td><td><script>document.write(Math.round(4.9));</script></td><td><script>document.write(Math.ceil(4.9));</script></td><td><script>document.write(truncate(4.9));</script></td></tr>
+			<tr><td>5</td><td><script>document.write(Math.floor(5));</script></td><td><script>document.write(Math.round(5));</script></td><td><script>document.write(Math.ceil(5));</script></td><td><script>document.write(truncate(5));</script></td></tr>
+		</tbody>
+	</table>
+</div>
+<footer>
+	Mathieu Davy 2011
+</footer>
+</body>
+</html>
