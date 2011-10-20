@@ -57,17 +57,19 @@ sun.CONST = {
 };
 
 sun.start = function () {
-	var	today = sun.today(),
+	var
+			today = sun.today(),
 			todayUTC = sun.todayUTC(),
-//			lat = 52,
-//			lng = -5
+			// today = [1, 4, 2004],
+			// todayUTC = [1, 4, 2004],
+			// lat = 52,
+			// lng = -5
 // Values for London
+// 51°30′26″N 0°7′39″W
 			lat = 51.507222,
-			lng = -0.1275
+			lng = 0.1275
 			;
 	
-//	today = [1, 4, 2004];
-//	todayUTC = [1, 4, 2004];
 	$('#today').html(today[0] + ' ' + today[1] + ' ' + today[2]);
 	$('#todayUTC').html(todayUTC[0] + ' ' + todayUTC[1] + ' ' + todayUTC[2]);
 	
@@ -107,7 +109,7 @@ sun.start = function () {
 	var todaySolarTransit = sun.calcSolarTransit(todayCJDN, 0, lng, sunEclipticLon);
 	$('#todaySolarTransit').html(todaySolarTransit);
 	
-	var nextAndDiff = sun.calcNextAndDiff(todaySolarTransit),
+	var nextAndDiff = sun.calcClosestAndDiff(todaySolarTransit),
 		 diffPosition = 'before';
 	$('#nextJulianDay').html(nextAndDiff[0]);
 	if(nextAndDiff[1] > 0) {
@@ -164,7 +166,7 @@ sun.CJDN2gregorian = function(J) {
 			m = x1 - 12*c0 + 3,
 			d = y1 - Math.floor((153*x1 - 3)/5);
 			
-	return [d,m,j];
+	return [d, m, j];
 };
 
 /**
@@ -195,7 +197,7 @@ sun.CJDN2julian = function(J) {
 			m = x1 - 12*c0 + 3,
 			d = z2 - Math.floor((153*x1 - 3)/5);
 			
-	return [d,m,j];
+	return [d, m, j];
 };
 
 /**
@@ -301,29 +303,28 @@ sun.calcSolarTransit = function(J, Htarget, lng, lambda) {
 			n = Math.round(nStar),
 			JStar = sun.CONST.J2000 + sun.CONST.earth.solarTransit.J0 + (Htarget + lng) * sun.CONST.earth.solarTransit.J3/360 + sun.CONST.earth.solarTransit.J3 * n,
 			M = sun.calcMeanAnomaly(JStar),
-			LSun = M + sun.CONST.earth.periphelion + 180,
-			JTransit = JStar + sun.CONST.earth.solarTransit.J1 * Math.sin(M) + sun.CONST.earth.solarTransit.J2 * Math.sin(2 * LSun);
-	
+			C = sun.calcEquationCenter(M),
+			LSun = M + C + sun.CONST.earth.periphelion + 180,
+			JTransit = JStar + sun.CONST.earth.solarTransit.J1 * Math.sin(u.tr(M)) + sun.CONST.earth.solarTransit.J2 * Math.sin(u.tr(2 * LSun));
+	// alert('nStar ' +nStar+ ' \nn ' +n+ ' \nJStar: ' +JStar+ ' \nM: ' +M+ ' \nLsun: ' +LSun+ ' \nJTransit: ' +JTransit);
 	return JTransit;
 };
 
 /**
- * Calculate the next Julian Date and difference in minutes from the solar transit
+ * Calculate the closest Julian Date and difference in hours from the solar transit
  * @param: float JTransit, the Julian Day of the solar transit 
  */
-sun.calcNextAndDiff = function(JTransit) {
-	var	nextJ = Math.ceil(JTransit),
-			diffDays = nextJ - JTransit, // in days
+sun.calcClosestAndDiff = function(JTransit) {
+	var	closeJ = Math.round(JTransit),
+			diffDays = closeJ - JTransit, // in days
 			diffHours = diffDays*24, // in hours
-			diffMin = Math.round(diffHours*60),
 			sign = 1;
 			
-	if(diffHours > 12) {
-		diffHours = 24 - diffHours;
+	if(closeJ > JTransit) {
 		sign = -1;
 	}
 	
-	return [nextJ,sign * diffHours];
+	return [closeJ, sign * diffHours];
 };
 
 /**
@@ -336,7 +337,7 @@ sun.formatHoursToHMS = function(hours) {
 			M = Math.floor((hours-H)*60),
 			S = Math.floor((((hours-H)*60)-M)*60);
 	
-	return [H+'h',M+'m',S+'s'];
+	return [H+'h', M+'m', S+'s'];
 };
 
-$(sun.start);
+$(sun.start);	
