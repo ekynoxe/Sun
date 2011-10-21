@@ -52,7 +52,9 @@ sun.CONST = {
 			J1: 0.0053,
 			J2: -0.0069,
 			J3: 1
-		}
+		},
+		refraction: -0.83,
+		solarDiskDiameter: 0.53
 	}
 };
 
@@ -91,6 +93,7 @@ sun.start = function () {
 	
 	var sunRightAscension = sun.calcSunRightAscension(sunEclipticLon);
 	$('#todaySunRightAscension').html(sunRightAscension);
+	
 	var sunDeclination = sun.calcSunDeclination(sunEclipticLon);
 	$('#todaySunDeclination').html(sunDeclination);
 	
@@ -118,6 +121,22 @@ sun.start = function () {
 	$('#diffPosition').html(diffPosition);
 	$('#diff').html(sun.formatHoursToHMS(Math.abs(nextAndDiff[1])).join(', '));
 	$('#nextCalendarDay').html(sun.CJDN2gregorian(nextAndDiff[0]).join(' / '));
+	
+	
+	var sunSet = sun.calcSunsetHourAngle(lat,sunDeclination);
+	$('#sunSet').html(sunSet);
+	
+	var sunSetJStar = sun.calcSolarTransit(todayCJDN, sunSet, lng, sunEclipticLon);
+	var sunRiseJStar = sun.calcSolarTransit(todayCJDN, -sunSet, lng, sunEclipticLon);
+//	$('#sunSetJStar').html(sunSetJStar);
+
+	var sunSetSolarTransit = sun.calcSunsetTransit(sunSetJStar,todayMeanAnomaly,sunEclipticLon);
+	var sunRiseSolarTransit = sun.calcSunsetTransit(sunRiseJStar,todayMeanAnomaly,sunEclipticLon);
+	$('#sunSetSolarTransit').html(sunSetSolarTransit);
+	$('#nextCalendarDaySet').html(sun.CJDN2gregorian(sunSetSolarTransit).join(' / '));
+	$('#sunRiseSolarTransit').html(sunRiseSolarTransit);
+	$('#nextCalendarDayRise').html(sun.CJDN2gregorian(sunRiseSolarTransit).join(' / '));
+	
 };
 /* Returns the gregorian day, month and year */
 sun.today = function() {
@@ -306,7 +325,7 @@ sun.calcSolarTransit = function(J, Htarget, lng, lambda) {
 			C = sun.calcEquationCenter(M),
 			LSun = M + C + sun.CONST.earth.periphelion + 180,
 			JTransit = JStar + sun.CONST.earth.solarTransit.J1 * Math.sin(u.tr(M)) + sun.CONST.earth.solarTransit.J2 * Math.sin(u.tr(2 * LSun));
-	// alert('nStar ' +nStar+ ' \nn ' +n+ ' \nJStar: ' +JStar+ ' \nM: ' +M+ ' \nLsun: ' +LSun+ ' \nJTransit: ' +JTransit);
+	 // alert('nStar ' +nStar+ ' \nn ' +n+ ' \nJStar: ' +JStar+ ' \nM: ' +M+ ' \nLsun: ' +LSun+ ' \nJTransit: ' +JTransit);
 	return JTransit;
 };
 
@@ -340,4 +359,28 @@ sun.formatHoursToHMS = function(hours) {
 	return [H+'h', M+'m', S+'s'];
 };
 
-$(sun.start);	
+/**
+ * Calculate Sunset Hour Angle for the given parameters
+ */
+sun.calcSunsetHourAngle = function(lat, delta) {
+	var	a = Math.sin(u.tr(sun.CONST.earth.refraction)),
+			b = Math.sin(u.tr(lat)),
+			c = Math.sin(u.tr(delta)),
+			d = Math.cos(u.tr(lat)),
+			e = Math.cos(u.tr(delta)),
+			f = a - b * c,
+			g = d * e;
+		 // alert('a ' +a+ ' \nb ' +b+ ' \nc: ' +c+ ' \nd: ' +d+ ' \ne: ' +e+ ' \nf: ' +f+ ' \ng: ' +g+ ' \nf/g: ' +f/g);
+	var H = Math.acos(f / g);
+	return u.td(H);
+};
+
+/**
+ * Calculate the Sunset Transit
+ */
+sun.calcSunsetTransit = function(sunsetHourAngle, M, lambda) {
+	JSetRise = sunsetHourAngle + (0.0053 * Math.sin(M)) - (0.0069 * Math.sin(2 * lambda));
+	return JSetRise;
+};
+
+$(sun.start);
