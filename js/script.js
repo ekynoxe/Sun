@@ -15,7 +15,11 @@ var	$=$,
 			// Converts degrees to radians
 			tr: function(d){ return d*Math.PI/180;},
 			// Converts radians to degrees
-			td: function(r){ return r/Math.PI*180;}
+			td: function(r){ return r/Math.PI*180;},
+			// Format a FULL CJDN in DD/MM/YYYY at hh:mm:ss
+			f: function(d) {
+				return d[0] + '/' + d[1] + '/' + d[2] + ' at ' + d[3] + ':' + d[4] + ':' + d[5];
+			}
 		};
 		
 // Formulae constants
@@ -60,92 +64,66 @@ sun.CONST = {
 
 sun.start = function () {
 	var
-			today = sun.today(),
-			todayUTC = sun.todayUTC(),
+	// Values for London
+	// 51°30′26″N 0°7′39″W
+			lat = 51.507222,
+			lng = 0.1275,
+			today = sun.todayParts(),
+			todayUTC = sun.todayUTCParts()
 			// today = [1, 4, 2004],
-			// todayUTC = [1, 4, 2004],
+			// todayUTC = [1, 4, 2004]
 			// lat = 52,
 			// lng = -5
-// Values for London
-// 51°30′26″N 0°7′39″W
-			lat = 51.507222,
-			lng = 0.1275
 			;
+	
+	var	todayCJDN = sun.gregorian2CJDN(today),
+			todayMeanAnomaly = sun.calcMeanAnomaly(todayCJDN),
+			todayEquationCenter = sun.calcEquationCenter(todayMeanAnomaly),
+			sunEclipticLon = sun.calcSunEclipticLon(todayMeanAnomaly+todayEquationCenter),
+			sunRightAscension = sun.calcSunRightAscension(sunEclipticLon),
+			sunDeclination = sun.calcSunDeclination(sunEclipticLon),
+			todaySunSideralTime = sun.calcSunSideralTime(todayCJDN, lng),
+			todaySunHourAngle = sun.calcSunHourAngle(sunRightAscension, todaySunSideralTime),
+			todaySunAzimuth = sun.calcSunAzimuth(todaySunHourAngle, lat, sunDeclination),
+			todaySunAltitude = sun.calcSunAltitude(todaySunHourAngle, lat, sunDeclination),
+			todaySolarTransit = sun.calcSolarTransit(todayCJDN, 0, lng, sunEclipticLon),
+			sunSet = sun.calcSunsetHourAngle(lat,sunDeclination),
+			sunSetJStar = sun.calcSolarTransit(todayCJDN, sunSet, lng, sunEclipticLon),
+			sunRiseJStar = sun.calcSolarTransit(todayCJDN, -sunSet, lng, sunEclipticLon),
+			sunSetSolarTransit = sun.calcSunsetTransit(sunSetJStar,todayMeanAnomaly,sunEclipticLon),
+			sunRiseSolarTransit = sun.calcSunsetTransit(sunRiseJStar,todayMeanAnomaly,sunEclipticLon),
+			sunRiseDateParts = sun.JD2FullGregorian(sunSetSolarTransit),
+			sunSetDateParts = sun.JD2FullGregorian(sunRiseSolarTransit);
 	
 	$('#today').html(today[0] + ' ' + today[1] + ' ' + today[2]);
 	$('#todayUTC').html(todayUTC[0] + ' ' + todayUTC[1] + ' ' + todayUTC[2]);
-	
-	var todayCJDN = sun.gregorian2CJDN(today);
-	//sun.CJDN2gregorian();
-	//sun.julian2CJDN();
-	//sun.CJDN2julian();
 	$('#todayCJDN').html(todayCJDN);
-	
-	var todayMeanAnomaly = sun.calcMeanAnomaly(todayCJDN);
 	$('#todayMeanAnomaly').html(todayMeanAnomaly);
-	
-	var todayEquationCenter = sun.calcEquationCenter(todayMeanAnomaly);
 	$('#todayEquationCenter').html(todayEquationCenter);
 	$('#todayTrueAnomaly').html(todayMeanAnomaly+todayEquationCenter);
-	
-	var sunEclipticLon = sun.calcSunEclipticLon(todayMeanAnomaly+todayEquationCenter);
 	$('#todaySunEclipticLon').html(sunEclipticLon);
-	
-	var sunRightAscension = sun.calcSunRightAscension(sunEclipticLon);
 	$('#todaySunRightAscension').html(sunRightAscension);
-	
-	var sunDeclination = sun.calcSunDeclination(sunEclipticLon);
 	$('#todaySunDeclination').html(sunDeclination);
-	
-	var todaySunSideralTime = sun.calcSunSideralTime(todayCJDN, lng);
 	$('#todaySunSideralTime').html(todaySunSideralTime);
-	
-	var todaySunHourAngle = sun.calcSunHourAngle(sunRightAscension, todaySunSideralTime);
 	$('#todaySunHourAngle').html(todaySunHourAngle);
-	
-	var todaySunAzimuth = sun.calcSunAzimuth(todaySunHourAngle, lat, sunDeclination);
 	$('#todaySunAzimuth').html(todaySunAzimuth);
-	
-	var todaySunAltitude = sun.calcSunAltitude(todaySunHourAngle, lat, sunDeclination);
 	$('#todaySunAltitude').html(todaySunAltitude);
-	
-	var todaySolarTransit = sun.calcSolarTransit(todayCJDN, 0, lng, sunEclipticLon);
 	$('#todaySolarTransit').html(todaySolarTransit);
-	
-	var nextAndDiff = sun.calcClosestAndDiff(todaySolarTransit),
-		 diffPosition = 'before';
-	$('#nextJulianDay').html(nextAndDiff[0]);
-	if(nextAndDiff[1] > 0) {
-		diffPosition = 'after';
-	}
-	$('#diffPosition').html(diffPosition);
-	$('#diff').html(sun.formatHoursToHMS(Math.abs(nextAndDiff[1])).join(', '));
-	$('#nextCalendarDay').html(sun.CJDN2gregorian(nextAndDiff[0]).join(' / '));
-	
-	
-	var sunSet = sun.calcSunsetHourAngle(lat,sunDeclination);
+	$('#todaySolarTransitFull').html(u.f(sun.JD2FullGregorian(todaySolarTransit)));
 	$('#sunSet').html(sunSet);
-	
-	var sunSetJStar = sun.calcSolarTransit(todayCJDN, sunSet, lng, sunEclipticLon);
-	var sunRiseJStar = sun.calcSolarTransit(todayCJDN, -sunSet, lng, sunEclipticLon);
-//	$('#sunSetJStar').html(sunSetJStar);
-
-	var sunSetSolarTransit = sun.calcSunsetTransit(sunSetJStar,todayMeanAnomaly,sunEclipticLon);
-	var sunRiseSolarTransit = sun.calcSunsetTransit(sunRiseJStar,todayMeanAnomaly,sunEclipticLon);
 	$('#sunSetSolarTransit').html(sunSetSolarTransit);
-	$('#nextCalendarDaySet').html(sun.CJDN2gregorian(sunSetSolarTransit).join(' / '));
+	$('#nextCalendarDaySet').html(u.f(sunRiseDateParts));
 	$('#sunRiseSolarTransit').html(sunRiseSolarTransit);
-	$('#nextCalendarDayRise').html(sun.CJDN2gregorian(sunRiseSolarTransit).join(' / '));
-	
+	$('#nextCalendarDayRise').html(u.f(sunSetDateParts));
 };
 /* Returns the gregorian day, month and year */
-sun.today = function() {
+sun.todayParts = function() {
 	var d = new Date();
 	return [d.getDate(), d.getMonth()+1, d.getFullYear()];
 };
 
 /* Returns the gregorian day, month and year in UTC format */
-sun.todayUTC = function() {
+sun.todayUTCParts = function() {
 	var d = new Date();
 	return [d.getUTCDate(), d.getUTCMonth()+1, d.getUTCFullYear()];
 };
@@ -186,6 +164,20 @@ sun.CJDN2gregorian = function(J) {
 			d = y1 - Math.floor((153*x1 - 3)/5);
 			
 	return [d, m, j];
+};
+
+sun.JD2FullGregorian = function(JD) {
+	var	gregorian = sun.CJDN2gregorian(JD),
+			julianDate = JD + 0.5,
+			day = Math.floor(julianDate),
+			dayDiff = julianDate - day,
+			hoursDiff = dayDiff*24,
+			hours = Math.floor(hoursDiff),
+			minDiff = (hoursDiff - hours)*60,
+			min = Math.floor(minDiff),
+			sec = Math.floor((minDiff - min)*60);
+			
+			return [Math.round(gregorian[0]), gregorian[1], gregorian[2], hours, min, sec];
 };
 
 /**
@@ -330,27 +322,10 @@ sun.calcSolarTransit = function(J, Htarget, lng, lambda) {
 };
 
 /**
- * Calculate the closest Julian Date and difference in hours from the solar transit
- * @param: float JTransit, the Julian Day of the solar transit 
- */
-sun.calcClosestAndDiff = function(JTransit) {
-	var	closeJ = Math.round(JTransit),
-			diffDays = closeJ - JTransit, // in days
-			diffHours = diffDays*24, // in hours
-			sign = 1;
-			
-	if(closeJ > JTransit) {
-		sign = -1;
-	}
-	
-	return [closeJ, sign * diffHours];
-};
-
-/**
  * Format hours in H:M:S
  * @param: float hours, the hours to be formatted
  */
-sun.formatHoursToHMS = function(hours) {
+sun.formatDecimalHoursToHMS = function(hours) {
 	
 	var	H = Math.floor(hours),
 			M = Math.floor((hours-H)*60),
@@ -379,7 +354,7 @@ sun.calcSunsetHourAngle = function(lat, delta) {
  * Calculate the Sunset Transit
  */
 sun.calcSunsetTransit = function(sunsetHourAngle, M, lambda) {
-	JSetRise = sunsetHourAngle + (0.0053 * Math.sin(M)) - (0.0069 * Math.sin(2 * lambda));
+	var JSetRise = sunsetHourAngle + (0.0053 * Math.sin(M)) - (0.0069 * Math.sin(2 * lambda));
 	return JSetRise;
 };
 
