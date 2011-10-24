@@ -1,5 +1,5 @@
 /**
- * Sun: Calulating sunrise, sunset and equinoxes
+ * Sun: Calulating sunrise, sunset and later on, equinoxes
  * This code is based on the work of Dr Louis Strous at
  *		http://www.astro.uu.nl/~strous/AA/en/index.html
  * Specifically, these calculations implement his equations and
