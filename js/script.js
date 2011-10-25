@@ -46,9 +46,18 @@ $(function(){
 	$('#daySunAltitude').html(theSun.daySunAltitude);
 	$('#daySolarTransit').html(theSun.daySolarTransit);
 	$('#daySolarTransitFull').html(u.f(theSun.JD2FullGregorian(theSun.daySolarTransit)));
-	$('#sunSet').html(theSun.sunSet);
+	$('#sunSetHourAngle').html(theSun.sunSetHourAngle);
 	$('#sunSetSolarTransit').html(theSun.sunSetSolarTransit);
 	$('#nextCalendarDaySet').html(u.f(theSun.sunRiseDateParts));
 	$('#sunRiseSolarTransit').html(theSun.sunRiseSolarTransit);
 	$('#nextCalendarDayRise').html(u.f(theSun.sunSetDateParts));
+	
+	// TWILIGHTS
+	$('#sunSetCivilTwilightDate').html(u.f(theSun.sunSetCivilTwilightDateParts));
+	$('#sunRiseCivilTwilightDate').html(u.f(theSun.sunRiseCivilTwilightDateParts));
+	$('#sunSetNauticalTwilightDate').html(u.f(theSun.sunSetNauticalTwilightDateParts));
+	$('#sunRiseNauticalTwilightDate').html(u.f(theSun.sunRiseNauticalTwilightDateParts));
+	$('#sunSetAstronomicalTwilightDate').html(u.f(theSun.sunSetAstronomicalTwilightDateParts));
+	$('#sunRiseAstronomicalTwilightDate').html(u.f(theSun.sunRiseAstronomicalTwilightDateParts));
+	
 });

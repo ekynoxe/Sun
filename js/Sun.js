@@ -25,13 +25,43 @@ function Sun(day, lat, lng){
 	this.daySunAzimuth = this.calcSunAzimuth(this.daySunHourAngle, this.lat, this.sunDeclination);
 	this.daySunAltitude = this.calcSunAltitude(this.daySunHourAngle, this.lat, this.sunDeclination);
 	this.daySolarTransit = this.calcSolarTransit(this.dayCJDN, 0, this.lng, this.sunEclipticLon);
-	this.sunSet = this.calcSunsetHourAngle(this.lat,this.sunDeclination);
-	this.sunSetJStar = this.calcSolarTransit(this.dayCJDN, this.sunSet, this.lng, this.sunEclipticLon);
-	this.sunRiseJStar = this.calcSolarTransit(this.dayCJDN, -this.sunSet, this.lng, this.sunEclipticLon);
+	
+	this.sunSetHourAngle = this.calcSunsetHourAngle(this.lat,this.sunDeclination, this.CONST.earth.refraction);
+	
+	this.sunSetJStar = this.calcSolarTransit(this.dayCJDN, this.sunSetHourAngle, this.lng, this.sunEclipticLon);
+	this.sunRiseJStar = this.calcSolarTransit(this.dayCJDN, -this.sunSetHourAngle, this.lng, this.sunEclipticLon);
+	
 	this.sunSetSolarTransit = this.calcSunsetTransit(this.sunSetJStar, this.dayMeanAnomaly, this.sunEclipticLon);
 	this.sunRiseSolarTransit = this.calcSunsetTransit(this.sunRiseJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	
 	this.sunRiseDateParts = this.JD2FullGregorian(this.sunSetSolarTransit);
 	this.sunSetDateParts = this.JD2FullGregorian(this.sunRiseSolarTransit);
+	
+	// TWILIGHTS
+	this.sunSetCivilTwilightHourAngle = this.calcSunsetHourAngle(this.lat,this.sunDeclination, this.CONST.earth.twilights.civil);
+	this.sunSetNauticalTwilightHourAngle = this.calcSunsetHourAngle(this.lat,this.sunDeclination, this.CONST.earth.twilights.nautical);
+	this.sunSetAstronomicalTwilightHourAngle = this.calcSunsetHourAngle(this.lat,this.sunDeclination, this.CONST.earth.twilights.astronomical);
+	
+	this.sunSetCivilTwilightJStar = this.calcSolarTransit(this.dayCJDN, this.sunSetCivilTwilightHourAngle, this.lng, this.sunEclipticLon);
+	this.sunRiseCivilTwilightJStar = this.calcSolarTransit(this.dayCJDN, -this.sunSetCivilTwilightHourAngle, this.lng, this.sunEclipticLon);
+	this.sunSetNauticalTwilightJStar = this.calcSolarTransit(this.dayCJDN, this.sunSetNauticalTwilightHourAngle, this.lng, this.sunEclipticLon);
+	this.sunRiseNauticalTwilightJStar = this.calcSolarTransit(this.dayCJDN, -this.sunSetNauticalTwilightHourAngle, this.lng, this.sunEclipticLon);
+	this.sunSetAstronomicalTwilightJStar = this.calcSolarTransit(this.dayCJDN, this.sunSetAstronomicalTwilightHourAngle, this.lng, this.sunEclipticLon);
+	this.sunRiseAstronomicalTwilightJStar = this.calcSolarTransit(this.dayCJDN, -this.sunSetAstronomicalTwilightHourAngle, this.lng, this.sunEclipticLon);
+	
+	this.sunSetCivilTwilightSolarTransit = this.calcSunsetTransit(this.sunSetCivilTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	this.sunRiseCivilTwilightSolarTransit = this.calcSunsetTransit(this.sunRiseCivilTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	this.sunSetNauticalTwilightSolarTransit = this.calcSunsetTransit(this.sunSetNauticalTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	this.sunRiseNauticalTwilightSolarTransit = this.calcSunsetTransit(this.sunRiseNauticalTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	this.sunSetAstronomicalTwilightSolarTransit = this.calcSunsetTransit(this.sunSetAstronomicalTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	this.sunRiseAstronomicalTwilightSolarTransit = this.calcSunsetTransit(this.sunRiseAstronomicalTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	
+	this.sunSetCivilTwilightDateParts = this.JD2FullGregorian(this.sunSetCivilTwilightSolarTransit);
+	this.sunRiseCivilTwilightDateParts = this.JD2FullGregorian(this.sunRiseCivilTwilightSolarTransit);
+	this.sunSetNauticalTwilightDateParts = this.JD2FullGregorian(this.sunSetNauticalTwilightSolarTransit);
+	this.sunRiseNauticalTwilightDateParts = this.JD2FullGregorian(this.sunRiseNauticalTwilightSolarTransit);
+	this.sunSetAstronomicalTwilightDateParts = this.JD2FullGregorian(this.sunSetAstronomicalTwilightSolarTransit);
+	this.sunRiseAstronomicalTwilightDateParts = this.JD2FullGregorian(this.sunRiseAstronomicalTwilightSolarTransit);
 }
 
 // Utilities
@@ -78,7 +108,12 @@ Sun.prototype.CONST = {
 			J3: 1
 		},
 		refraction: -0.83,
-		solarDiskDiameter: 0.53
+		solarDiskDiameter: 0.53,
+		twilights: {
+			civil: -6,
+			nautical: -12,
+			astronomical: -18
+		}
 	}
 };
 
@@ -298,8 +333,8 @@ Sun.prototype.decimalHoursToHMS = function(hours) {
 /**
  * Calculate Sunset Hour Angle for the given parameters
  */
-Sun.prototype.calcSunsetHourAngle = function(lat, delta) {
-	var	a = Math.sin(this.u.tr(this.CONST.earth.refraction)),
+Sun.prototype.calcSunsetHourAngle = function(lat, delta, refraction) {
+	var	a = Math.sin(this.u.tr(refraction)),
 			b = Math.sin(this.u.tr(lat)),
 			c = Math.sin(this.u.tr(delta)),
 			d = Math.cos(this.u.tr(lat)),
