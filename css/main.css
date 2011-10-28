@@ -98,10 +98,15 @@ body{
 ul, ol{margin-left: 0;}
 select{font-size: 100%;}
 .coloured{color: #ff0;}
-.info{
-	color: #999;
+.info,
+#box .info{
+   background-color: #FFF1C4;
+   border: 1px solid #ddd;
+   color: #666;
+   font-size: 0.9em;
 	display: block;
-	padding: 0 5px 10px 5px;
+	padding: 10px;
+	text-align: center;
 }
 	header nav li:last-child{float: right;}
 	
@@ -195,6 +200,7 @@ header{
 		#box  input[type="text"],
 		#box  input[type="password"]{
 			font-size:15px;
+			margin-right: 5px;
 			padding: 5px;
 		}
 	#box  input[type="checkbox"]{
