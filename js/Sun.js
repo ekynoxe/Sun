@@ -277,7 +277,7 @@ Sun.prototype.calcSunsetHourAngle = function(lat, delta, refraction) {
 			f = a - b * c,
 			g = d * e;
 			
-	alert('a ' +a+ ' \nb ' +b+ ' \nc: ' +c+ ' \nd: ' +d+ ' \ne: ' +e+ ' \nf: ' +f+ ' \ng: ' +g+ ' \nf/g: ' +f/g);
+	// alert('a ' +a+ ' \nb ' +b+ ' \nc: ' +c+ ' \nd: ' +d+ ' \ne: ' +e+ ' \nf: ' +f+ ' \ng: ' +g+ ' \nf/g: ' +f/g);
 	var H = Math.acos(f / g);
 	return this.u.td(H);
 };
