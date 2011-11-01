@@ -30,23 +30,25 @@ var	$=$,
 			 */
 			dayUTCParts: function(d) {
 				return [d.getUTCDate(), d.getUTCMonth()+1, d.getUTCFullYear()];
+			},
+			td: function(r) {
+				return (r/Math.PI*180)%360;
 			}
 		},
 		defaults = {
 			london: {
 			// decimal below correspond to: 51°30′26″N 0°7′39″W
-				lat: 51.507222,
+				lat: 51.5072,
 				lng: 0.1275
 			},
 			netherlands: {
 			// numbers below correspond to: 52°00′00″N 0°5′00″E, for testing against resource site date example
 				lat: 52,
-				lng:-5
+				lng: -5
 			}
 		},
 		mySun = {
 			getDateParts: function (){
-				//new Date(2004, 3, 1), // April 1st 2004, for testing against resource site date example
 				return [parseInt($('input:text[name=day]').val()), parseInt($('input:text[name=month]').val()), parseInt($('input:text[name=year]').val())];
 			},
 			getCoordinates: function (){
@@ -68,36 +70,40 @@ var	$=$,
 				
 				$('#day').html(theSun.day[0] + ' ' + theSun.day[1] + ' ' + theSun.day[2]);
 				$('#dayCJDN').html(theSun.dayCJDN);
-				$('#dayMeanAnomaly').html(theSun.dayMeanAnomaly);
-				$('#dayEquationCenter').html(theSun.dayEquationCenter);
-				$('#dayTrueAnomaly').html(theSun.dayMeanAnomaly + theSun.dayEquationCenter);
-				$('#daySunEclipticLon').html(theSun.sunEclipticLon);
-				$('#daySunRightAscension').html(theSun.sunRightAscension);
-				$('#daySunDeclination').html(theSun.sunDeclination);
-				$('#daySunSideralTime').html(theSun.daySunSideralTime);
-				$('#daySunHourAngle').html(theSun.daySunHourAngle);
-				$('#daySunAzimuth').html(theSun.daySunAzimuth);
-				$('#daySunAltitude').html(theSun.daySunAltitude);
+				$('#dayMeanAnomaly').html(u.td(theSun.dayMeanAnomaly));
+				$('#dayEquationCenter').html(u.td(theSun.dayEquationCenter));
+				$('#dayTrueAnomaly').html(u.td(theSun.dayMeanAnomaly + theSun.dayEquationCenter));
+				$('#daySunEclipticLon').html(u.td(theSun.sunEclipticLon));
+				$('#daySunRightAscension').html(u.td(theSun.sunRightAscension));
+				$('#daySunDeclination').html(u.td(theSun.sunDeclination));
+				$('#daySunSiderealTime').html(u.td(theSun.daySunSiderealTime));
+				$('#daySunHourAngle').html(u.td(theSun.daySunHourAngle));
+				$('#daySunAzimuth').html(u.td(theSun.daySunAzimuth));
+				$('#daySunAltitude').html(u.td(theSun.daySunAltitude));
 				$('#daySolarTransit').html(theSun.daySolarTransit);
 				$('#daySolarTransitFull').html(u.f(theSun.JD2FullGregorian(theSun.daySolarTransit)));
+								
 				$('#sunSetHourAngle').html(theSun.sunSetHourAngle);
 				$('#sunSetSolarTransit').html(theSun.sunSetSolarTransit);
-				$('#nextCalendarDaySet').html(u.f(theSun.sunRiseDateParts));
+				$('#nextCalendarDaySet').html(u.f(theSun.sunSetDateParts));
 				$('#sunRiseSolarTransit').html(theSun.sunRiseSolarTransit);
-				$('#nextCalendarDayRise').html(u.f(theSun.sunSetDateParts));
-
+				$('#nextCalendarDayRise').html(u.f(theSun.sunRiseDateParts));
+				
 				// TWILIGHTS
+				
 				$('#sunSetCivilTwilightDate').html(u.f(theSun.sunSetCivilTwilightDateParts));
 				$('#sunRiseCivilTwilightDate').html(u.f(theSun.sunRiseCivilTwilightDateParts));
 				$('#sunSetNauticalTwilightDate').html(u.f(theSun.sunSetNauticalTwilightDateParts));
 				$('#sunRiseNauticalTwilightDate').html(u.f(theSun.sunRiseNauticalTwilightDateParts));
 				$('#sunSetAstronomicalTwilightDate').html(u.f(theSun.sunSetAstronomicalTwilightDateParts));
 				$('#sunRiseAstronomicalTwilightDate').html(u.f(theSun.sunRiseAstronomicalTwilightDateParts));
+				
 			}
 		};
 
 $(function(){
-	mySun.setFields(new Date(), defaults.london);
+	// mySun.setFields(new Date(), defaults.london);
+	mySun.setFields(new Date(2004, 3, 1),defaults.netherlands);
 	mySun.calculateTimes();
 	$("#calculate").click(function(){mySun.calculateTimes(); return false;});
 });
