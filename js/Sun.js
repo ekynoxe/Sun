@@ -7,64 +7,35 @@
  *		http://www.astro.uu.nl/~strous/AA/en/reken/zonpositie.html
  * @Author: Mathieu Davy - Ekynoxe, 2011 http://ekynoxe.com
  */
+var dtr = Math.PI/180;
 
 function Sun(day, lat, lng){
-	this.lat = lat;
-	this.lng = lng;
+	this.lat = lat * dtr;
+	this.lng = lng * dtr;
 	this.day = day;
+	this.constants = this.CONST;
 }
 
-// Utilities
-Sun.prototype.u = {
-	// Convert degrees to radians
-	tr: function(d){ return d*Math.PI/180;},
-	// Convert radians to degrees
-	td: function(r){ return r/Math.PI*180;}
-};
-
 // Formulae constants
-Sun.prototype.CONST = {
+var CONST = {
 	J2000: 2451545,
-	earth: {
-		meanAnomaly: {
-			M0: 357.5291,
-			M1: 0.98560028
-		},
-		equationOfCenter: {
-			C1: 1.9148,
-			C2: 0.0200,
-			C3: 0.0003
-		},
-		periphelion: 102.9372,
-		obliquity: 23.45,
-		rightAscension: {
-			A2: -2.4680,
-			A4: 0.0530,
-			A6: -0.0014
-		},
-		declination: {
-			D1: 0.5999,
-			D3: 0.0493,
-			D5: 0.0003
-		},
-		sideralTime: {
-			T0: 280.1600,
-			T1: 360.9856235
-		},
-		solarTransit: {
-			J0: 0.0009,
-			J1: 0.0053,
-			J2: -0.0069,
-			J3: 1
-		},
-		refraction: -0.83,
-		solarDiskDiameter: 0.53,
-		twilights: {
-			civil: -6,
-			nautical: -12,
-			astronomical: -18
-		}
-	}
+	M0: 357.5291 * dtr,
+	M1: 0.98560028 * dtr,
+	C1: 1.9148 * dtr,
+	C2: 0.0200 * dtr,
+	C3: 0.0003 * dtr,
+	P: 102.9372 * dtr,
+	E: 23.45 * dtr,
+	T0: 280.1600 * dtr,
+	T1: 360.9856235 * dtr,
+	J0: 0.0009,
+	J1: 0.0053,
+	J2: -0.0069,
+	h0: -0.83 * dtr,
+	dsun: 0.53 * dtr,
+	twcivil: -6 * dtr,
+	twnautical: -12 * dtr,
+	twastronomical: -18 * dtr
 };
 
 /**
@@ -157,7 +128,7 @@ Sun.prototype.CJDN2julian = function(J) {
  * @param: int J, the Chronological Julian Day Number
  */
 Sun.prototype.calcMeanAnomaly = function(J) {
-	return (this.CONST.earth.meanAnomaly.M0 + this.CONST.earth.meanAnomaly.M1*(J - this.CONST.J2000)) % 360;
+	return CONST.M0 + CONST.M1 * (J - CONST.J2000);
 };
 
 /**
@@ -165,9 +136,9 @@ Sun.prototype.calcMeanAnomaly = function(J) {
  * @param: float M, the Mean Anomaly for planet EARTH
  */
 Sun.prototype.calcEquationCenter = function(M) {
-	return	this.CONST.earth.equationOfCenter.C1 * Math.sin(this.u.tr(M)) +
-				this.CONST.earth.equationOfCenter.C2 * Math.sin(2 * this.u.tr(M)) +
-				this.CONST.earth.equationOfCenter.C3 * Math.sin(3 * this.u.tr(M));
+	return	CONST.C1 * Math.sin(M) +
+				CONST.C2 * Math.sin(2 * M) +
+				CONST.C3 * Math.sin(3 * M);
 };
 
 /**
@@ -175,7 +146,7 @@ Sun.prototype.calcEquationCenter = function(M) {
  * @param: float v, the True Anomaly for planet EARTH
  */
 Sun.prototype.calcSunEclipticLon = function(v) {
-	return (v + this.CONST.earth.periphelion + 180) % 360;
+	return v + CONST.P + Math.PI;
 };
 
 /**
@@ -183,7 +154,7 @@ Sun.prototype.calcSunEclipticLon = function(v) {
  * @param: float lambda, the ecliptical longitude of the sun as seen from planet EARTH
  */
 Sun.prototype.calcSunRightAscension = function(lambda) {
-	return this.u.td(Math.atan2(Math.sin(this.u.tr(lambda)) * Math.cos(this.u.tr(this.CONST.earth.obliquity)), Math.cos(this.u.tr(lambda))));
+	return Math.atan2(Math.sin(lambda) * Math.cos(CONST.E), Math.cos(lambda));
 };
 
 /**
@@ -191,17 +162,17 @@ Sun.prototype.calcSunRightAscension = function(lambda) {
  * @param: float lambda, the ecliptical longitude of the sun as seen from planet EARTH
  */
 Sun.prototype.calcSunDeclination = function(lambda) {
-	return this.u.td(Math.asin(Math.sin(this.u.tr(lambda)) * Math.sin(this.u.tr(this.CONST.earth.obliquity))));
+	return Math.asin(Math.sin(lambda) * Math.sin(CONST.E));
 };
 
 /**
- * Calculate the sun's Sideral Time for the given coordinates of the observer on planet EARTH
+ * Calculate the sun's Sidereal Time for the given coordinates of the observer on planet EARTH
  * @param: int J, the Julian day
  * @param: float lat, the latitude NORTH of the observer on planet EARTH
  * @param: float lon, the longitude WEST of the observer on planet EARTH
  */
-Sun.prototype.calcSunSideralTime = function(J, lng) {
-	return (this.CONST.earth.sideralTime.T0 + this.CONST.earth.sideralTime.T1 * (J - this.CONST.J2000) - lng) % 360;
+Sun.prototype.calcSunSiderealTime = function(J, lng) {
+	return CONST.T0 + CONST.T1 * (J - CONST.J2000) - lng;
 };
 
 /**
@@ -210,7 +181,7 @@ Sun.prototype.calcSunSideralTime = function(J, lng) {
  * @param: float theta, the sun's Siedral Time
  */
 Sun.prototype.calcSunHourAngle = function(alpha, theta) {
-	return (theta - alpha) % 360;
+	return theta - alpha;
 };
 
 /**
@@ -220,7 +191,7 @@ Sun.prototype.calcSunHourAngle = function(alpha, theta) {
  * @param: float delta, the sun's declination
  */
 Sun.prototype.calcSunAzimuth = function(H, lat, delta) {
-	return this.u.td(Math.atan2(Math.sin(this.u.tr(H)), Math.cos(this.u.tr(H)) * Math.sin(this.u.tr(lat)) - Math.tan(this.u.tr(delta)) * Math.cos(this.u.tr(lat))));
+	return Math.atan2(Math.sin(H), Math.cos(H) * Math.sin(lat) - Math.tan(delta) * Math.cos(lat));
 };
 
 /**
@@ -230,7 +201,7 @@ Sun.prototype.calcSunAzimuth = function(H, lat, delta) {
  * @param: float delta, the sun's declination
  */
 Sun.prototype.calcSunAltitude = function(H, lat, delta) {
-	return this.u.td(Math.asin(Math.sin(this.u.tr(lat)) *  Math.sin(this.u.tr(delta)) + Math.cos(this.u.tr(lat)) * Math.cos(this.u.tr(delta)) * Math.cos(this.u.tr(H))));
+	return Math.asin(Math.sin(lat) *  Math.sin(delta) + Math.cos(lat) * Math.cos(delta) * Math.cos(H));
 };
 
 /**
@@ -241,15 +212,27 @@ Sun.prototype.calcSunAltitude = function(H, lat, delta) {
  * @param: float lambda, the ecliptical longitude of the sun as seen from planet EARTH
  */
 Sun.prototype.calcSolarTransit = function(J, Htarget, lng, lambda) {
-	var	nStar = (J - this.CONST.J2000 - this.CONST.earth.solarTransit.J0)/this.CONST.earth.solarTransit.J3 - (Htarget + lng)/360,
+	var	nStar = (J - CONST.J2000 - CONST.J0) - (Htarget + lng)/(2*Math.PI),
 			n = Math.round(nStar),
-			JStar = this.CONST.J2000 + this.CONST.earth.solarTransit.J0 + (Htarget + lng) * this.CONST.earth.solarTransit.J3/360 + this.CONST.earth.solarTransit.J3 * n,
-			M = this.calcMeanAnomaly(JStar),
+			JStar = CONST.J2000 + CONST.J0 + ((Htarget + lng) / (2*Math.PI)) + n,
+			M = this.dayMeanAnomaly,
 			C = this.calcEquationCenter(M),
-			LSun = M + C + this.CONST.earth.periphelion + 180,
-			JTransit = JStar + this.CONST.earth.solarTransit.J1 * Math.sin(this.u.tr(M)) + this.CONST.earth.solarTransit.J2 * Math.sin(this.u.tr(2 * LSun));
-	 // alert('nStar ' +nStar+ ' \nn ' +n+ ' \nJStar: ' +JStar+ ' \nM: ' +M+ ' \nLsun: ' +LSun+ ' \nJTransit: ' +JTransit);
+			LSun = M + CONST.P + Math.PI,
+			JTransit = this.calcTransit(JStar, M, LSun);
+			
 	return JTransit;
+};
+
+Sun.prototype.optimizeJTransit = function(J) {
+	return J + (this.daySunHourAngle - this.calcSunSiderealTime(J, this.lng))/(2*Math.PI);
+};
+
+
+/**
+ * Calculate a Transit from the parameters
+ */
+Sun.prototype.calcTransit = function(sunsetHourAngle, M, lambda) {
+	return sunsetHourAngle + (CONST.J1 * Math.sin(M)) + (CONST.J2 * Math.sin(2 * lambda));
 };
 
 /**
@@ -260,33 +243,15 @@ Sun.prototype.decimalHoursToHMS = function(hours) {
 	var	H = Math.floor(hours),
 			M = Math.floor((hours-H)*60),
 			S = Math.floor((((hours-H)*60)-M)*60);
-	
+			
 	return [H, M, S];
 };
 
 /**
  * Calculate Sunset Hour Angle for the given parameters
  */
-Sun.prototype.calcSunsetHourAngle = function(lat, delta, refraction) {
-	
-	var	a = Math.sin(this.u.tr(refraction)),
-			b = Math.sin(this.u.tr(lat)),
-			c = Math.sin(this.u.tr(delta)),
-			d = Math.cos(this.u.tr(lat)),
-			e = Math.cos(this.u.tr(delta)),
-			f = a - b * c,
-			g = d * e;
-			
-	// alert('a ' +a+ ' \nb ' +b+ ' \nc: ' +c+ ' \nd: ' +d+ ' \ne: ' +e+ ' \nf: ' +f+ ' \ng: ' +g+ ' \nf/g: ' +f/g);
-	var H = Math.acos(f / g);
-	return this.u.td(H);
-};
-
-/**
- * Calculate the Sunset Transit
- */
-Sun.prototype.calcSunsetTransit = function(sunsetHourAngle, M, lambda) {
-	return sunsetHourAngle + (0.0053 * Math.sin(M)) - (0.0069 * Math.sin(2 * lambda));
+Sun.prototype.calcSunsetHourAngle = function(lat, delta, h0) {
+	return Math.acos((Math.sin(h0) - (Math.sin(lat) * Math.sin(delta))) / (Math.cos(lat) * Math.cos(delta)));
 };
 
 Sun.prototype.calculateAll = function() {
@@ -296,27 +261,38 @@ Sun.prototype.calculateAll = function() {
 	this.sunEclipticLon = this.calcSunEclipticLon(this.dayMeanAnomaly + this.dayEquationCenter);
 	this.sunRightAscension = this.calcSunRightAscension(this.sunEclipticLon);
 	this.sunDeclination = this.calcSunDeclination(this.sunEclipticLon);
-	this.daySunSideralTime = this.calcSunSideralTime(this.dayCJDN, this.lng);
-	this.daySunHourAngle = this.calcSunHourAngle(this.sunRightAscension, this.daySunSideralTime);
+	this.daySunSiderealTime = this.calcSunSiderealTime(this.dayCJDN, this.lng);
+	this.daySunHourAngle = this.calcSunHourAngle(this.sunRightAscension, this.daySunSiderealTime);
 	this.daySunAzimuth = this.calcSunAzimuth(this.daySunHourAngle, this.lat, this.sunDeclination);
 	this.daySunAltitude = this.calcSunAltitude(this.daySunHourAngle, this.lat, this.sunDeclination);
 	this.daySolarTransit = this.calcSolarTransit(this.dayCJDN, 0, this.lng, this.sunEclipticLon);
 	
-	this.sunSetHourAngle = this.calcSunsetHourAngle(this.lat,this.sunDeclination, this.CONST.earth.refraction);
+	/*
+	var optimTransitRepeat = 0,
+		optimizedTransit = 0;
+	
+	while(optimTransitRepeat<=10) {
+		optimizedTransit = this.optimizeJTransit(this.daySolarTransit);
+		if(this.daySolarTransit == optimizedTransit) { break; }
+		optimTransitRepeat++;
+		this.daySolarTransit = optimizedTransit;
+	}
+	*/
+	this.sunSetHourAngle = this.calcSunsetHourAngle(this.lat,this.sunDeclination, CONST.h0);
 	
 	this.sunSetJStar = this.calcSolarTransit(this.dayCJDN, this.sunSetHourAngle, this.lng, this.sunEclipticLon);
 	this.sunRiseJStar = this.calcSolarTransit(this.dayCJDN, -this.sunSetHourAngle, this.lng, this.sunEclipticLon);
 	
-	this.sunSetSolarTransit = this.calcSunsetTransit(this.sunSetJStar, this.dayMeanAnomaly, this.sunEclipticLon);
-	this.sunRiseSolarTransit = this.calcSunsetTransit(this.sunRiseJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	this.sunSetSolarTransit = this.calcTransit(this.sunSetJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	this.sunRiseSolarTransit = this.calcTransit(this.sunRiseJStar, this.dayMeanAnomaly, this.sunEclipticLon);
 	
-	this.sunRiseDateParts = this.JD2FullGregorian(this.sunSetSolarTransit);
-	this.sunSetDateParts = this.JD2FullGregorian(this.sunRiseSolarTransit);
+	this.sunRiseDateParts = this.JD2FullGregorian(this.sunRiseSolarTransit);
+	this.sunSetDateParts = this.JD2FullGregorian(this.sunSetSolarTransit);
 	
 	// TWILIGHTS
-	this.sunSetCivilTwilightHourAngle = this.calcSunsetHourAngle(this.lat,this.sunDeclination, this.CONST.earth.twilights.civil);
-	this.sunSetNauticalTwilightHourAngle = this.calcSunsetHourAngle(this.lat,this.sunDeclination, this.CONST.earth.twilights.nautical);
-	this.sunSetAstronomicalTwilightHourAngle = this.calcSunsetHourAngle(this.lat,this.sunDeclination, this.CONST.earth.twilights.astronomical);
+	this.sunSetCivilTwilightHourAngle = this.calcSunsetHourAngle(this.lat,this.sunDeclination, CONST.twcivil);
+	this.sunSetNauticalTwilightHourAngle = this.calcSunsetHourAngle(this.lat,this.sunDeclination, CONST.twnautical);
+	this.sunSetAstronomicalTwilightHourAngle = this.calcSunsetHourAngle(this.lat,this.sunDeclination, CONST.twastronomical);
 	
 	this.sunSetCivilTwilightJStar = this.calcSolarTransit(this.dayCJDN, this.sunSetCivilTwilightHourAngle, this.lng, this.sunEclipticLon);
 	this.sunRiseCivilTwilightJStar = this.calcSolarTransit(this.dayCJDN, -this.sunSetCivilTwilightHourAngle, this.lng, this.sunEclipticLon);
@@ -325,12 +301,12 @@ Sun.prototype.calculateAll = function() {
 	this.sunSetAstronomicalTwilightJStar = this.calcSolarTransit(this.dayCJDN, this.sunSetAstronomicalTwilightHourAngle, this.lng, this.sunEclipticLon);
 	this.sunRiseAstronomicalTwilightJStar = this.calcSolarTransit(this.dayCJDN, -this.sunSetAstronomicalTwilightHourAngle, this.lng, this.sunEclipticLon);
 	
-	this.sunSetCivilTwilightSolarTransit = this.calcSunsetTransit(this.sunSetCivilTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
-	this.sunRiseCivilTwilightSolarTransit = this.calcSunsetTransit(this.sunRiseCivilTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
-	this.sunSetNauticalTwilightSolarTransit = this.calcSunsetTransit(this.sunSetNauticalTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
-	this.sunRiseNauticalTwilightSolarTransit = this.calcSunsetTransit(this.sunRiseNauticalTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
-	this.sunSetAstronomicalTwilightSolarTransit = this.calcSunsetTransit(this.sunSetAstronomicalTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
-	this.sunRiseAstronomicalTwilightSolarTransit = this.calcSunsetTransit(this.sunRiseAstronomicalTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	this.sunSetCivilTwilightSolarTransit = this.calcTransit(this.sunSetCivilTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	this.sunRiseCivilTwilightSolarTransit = this.calcTransit(this.sunRiseCivilTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	this.sunSetNauticalTwilightSolarTransit = this.calcTransit(this.sunSetNauticalTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	this.sunRiseNauticalTwilightSolarTransit = this.calcTransit(this.sunRiseNauticalTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	this.sunSetAstronomicalTwilightSolarTransit = this.calcTransit(this.sunSetAstronomicalTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
+	this.sunRiseAstronomicalTwilightSolarTransit = this.calcTransit(this.sunRiseAstronomicalTwilightJStar, this.dayMeanAnomaly, this.sunEclipticLon);
 	
 	this.sunSetCivilTwilightDateParts = this.JD2FullGregorian(this.sunSetCivilTwilightSolarTransit);
 	this.sunRiseCivilTwilightDateParts = this.JD2FullGregorian(this.sunRiseCivilTwilightSolarTransit);
@@ -338,4 +314,5 @@ Sun.prototype.calculateAll = function() {
 	this.sunRiseNauticalTwilightDateParts = this.JD2FullGregorian(this.sunRiseNauticalTwilightSolarTransit);
 	this.sunSetAstronomicalTwilightDateParts = this.JD2FullGregorian(this.sunSetAstronomicalTwilightSolarTransit);
 	this.sunRiseAstronomicalTwilightDateParts = this.JD2FullGregorian(this.sunRiseAstronomicalTwilightSolarTransit);
+	
 };
