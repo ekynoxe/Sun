@@ -38,13 +38,13 @@ var	$=$,
 		defaults = {
 			london: {
 			// decimal below correspond to: 51°30′26″N 0°7′39″W
-				lat: 51.5072,
-				lng: 0.1275
+				lat: 51.508,
+				lng: -0.125
 			},
 			netherlands: {
 			// numbers below correspond to: 52°00′00″N 0°5′00″E, for testing against resource site date example
 				lat: 52,
-				lng: -5
+				lng: 5
 			}
 		},
 		mySun = {
@@ -102,8 +102,8 @@ var	$=$,
 		};
 
 $(function(){
-	// mySun.setFields(new Date(), defaults.london);
-	mySun.setFields(new Date(2004, 3, 1),defaults.netherlands);
+	mySun.setFields(new Date(), defaults.london);
+	// mySun.setFields(new Date(2004, 3, 1),defaults.netherlands);
 	mySun.calculateTimes();
 	$("#calculate").click(function(){mySun.calculateTimes(); return false;});
 });
