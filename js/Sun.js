@@ -11,7 +11,7 @@ var dtr = Math.PI/180;
 
 function Sun(day, lat, lng){
 	this.lat = lat * dtr;
-	this.lng = lng * dtr;
+	this.lng = -lng * dtr;
 	this.day = day;
 	this.constants = this.CONST;
 }
