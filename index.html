@@ -40,54 +40,79 @@
 			<li><input id="calculate" type="submit" value="Calculate!" /></li>
 		</ul>
 	</form>
-	<h2>Solar transit for today</h2>
-	<p>At: <span id="daySolarTransitFull"></span> UTC</p>
+
+	<h2>Quick results for <span class="day"></span></h2>
+	<ul>
+		<li>Dawn: <span class="sunRiseNauticalTwilightDate"></span> UTC</li>
+		<li>Sunrise: <span class="nextCalendarDayRise"></span> UTC</li>
+		<li>Solar noon: <span class="daySolarTransitFull"></span> UTC</li>
+		<li>Sunset: <span class="nextCalendarDaySet"></span> UTC</li>
+		<li>Dusk: <span class="sunSetNauticalTwilightDate"></span> UTC</li>
+	</ul>
 	
 	<h2>Sunrise / Sunset</h2>
-	<p>Sunrise is: <span id="nextCalendarDayRise"></span> UTC</p>
-	<p>Sunset is: <span id="nextCalendarDaySet"></span> UTC</p>
+	<p>Sunrise is: <span class="nextCalendarDayRise"></span> UTC</p>
+	<p>Sunset is: <span class="nextCalendarDaySet"></span> UTC</p>
 	
 	<h2>Twilights</h2>
 	<h3>Sunrise</h3>
-	<p>Astronomical twilight is: <span id="sunRiseAstronomicalTwilightDate"></span> UTC</p>
-	<p>Nautical twilight is: <span id="sunRiseNauticalTwilightDate"></span> UTC</p>
-	<p>Civil twilight is: <span id="sunRiseCivilTwilightDate"></span> UTC</p>
+	<p>Astronomical twilight is: <span class="sunRiseAstronomicalTwilightDate"></span> UTC</p>
+	<p>Nautical twilight is: <span class="sunRiseNauticalTwilightDate"></span> UTC</p>
+	<p>Civil twilight is: <span class="sunRiseCivilTwilightDate"></span> UTC</p>
 	<h3>Sunset</h3>
-	<p>Civil twilight is: <span id="sunSetCivilTwilightDate"></span> UTC</p>
-	<p>Nautical twilight is: <span id="sunSetNauticalTwilightDate"></span> UTC</p>
-	<p>Astronomical twilight is: <span id="sunSetAstronomicalTwilightDate"></span> UTC</p>
+	<p>Civil twilight is: <span class="sunSetCivilTwilightDate"></span> UTC</p>
+	<p>Nautical twilight is: <span class="sunSetNauticalTwilightDate"></span> UTC</p>
+	<p>Astronomical twilight is: <span class="sunSetAstronomicalTwilightDate"></span> UTC</p>
+
+
+	<h2>Solar transit for today</h2>
+	<p>At: <span class="daySolarTransitFull"></span> UTC</p>
+	
+	<h2>Sunrise / Sunset</h2>
+	<p>Sunrise is: <span class="nextCalendarDayRise"></span> UTC</p>
+	<p>Sunset is: <span class="nextCalendarDaySet"></span> UTC</p>
+	
+	<h2>Twilights</h2>
+	<h3>Sunrise</h3>
+	<p>Astronomical twilight is: <span class="sunRiseAstronomicalTwilightDate"></span> UTC</p>
+	<p>Nautical twilight is: <span class="sunRiseNauticalTwilightDate"></span> UTC</p>
+	<p>Civil twilight is: <span class="sunRiseCivilTwilightDate"></span> UTC</p>
+	<h3>Sunset</h3>
+	<p>Civil twilight is: <span class="sunSetCivilTwilightDate"></span> UTC</p>
+	<p>Nautical twilight is: <span class="sunSetNauticalTwilightDate"></span> UTC</p>
+	<p>Astronomical twilight is: <span class="sunSetAstronomicalTwilightDate"></span> UTC</p>
 	
 	<h2>Calculation details</h2>
 	<h3>Time</h3>
-	<p>Today Chronological Julian Day Number is <span id="dayCJDN"></span></p>
+	<p>Today Chronological Julian Day Number is <span class="dayCJDN"></span></p>
 	
 	<h3>Mean Anomaly</h3>
-	<p>Today's mean anomaly is <span id="dayMeanAnomaly"></span>&deg;</p>
+	<p>Today's mean anomaly is <span class="dayMeanAnomaly"></span>&deg;</p>
 	
 	<h3>Equation of Center</h3>
-	<p>Today's equation of center C is <span id="dayEquationCenter"></span>&deg;</p>
-	<p>Today's true anomaly &nu; is <span id="dayTrueAnomaly"></span>&deg;</p>
+	<p>Today's equation of center C is <span class="dayEquationCenter"></span>&deg;</p>
+	<p>Today's true anomaly &nu; is <span class="dayTrueAnomaly"></span>&deg;</p>
 	
 	<h3>Ecliptical Coordinates</h3>
-	<p>Today's sun ecliptical longitude &lambda; is <span id="daySunEclipticLon"></span>&deg;</p>
+	<p>Today's sun ecliptical longitude &lambda; is <span class="daySunEclipticLon"></span>&deg;</p>
 	
 	<h3>Equatorial Coordinates</h3>
-	<p>Today's sun Right Ascension &alpha; is <span id="daySunRightAscension"></span>&deg;</p>
-	<p>Today's sun Declination &delta; is <span id="daySunDeclination"></span>&deg;</p>
+	<p>Today's sun Right Ascension &alpha; is <span class="daySunRightAscension"></span>&deg;</p>
+	<p>Today's sun Declination &delta; is <span class="daySunDeclination"></span>&deg;</p>
 	
 	<h3>The Observer</h3>
-	<p>Today's sun Sidereal Time &theta; is <span id="daySunSiderealTime"></span>&deg;</p>
-	<p>Today's sun Hour Angle is <span id="daySunHourAngle"></span>&deg;</p>
-	<p>Today's sun Azimuth is <span id="daySunAzimuth"></span>&deg;</p>
-	<p>Today's sun Altitude is <span id="daySunAltitude"></span>&deg;</p>
+	<p>Today's sun Sidereal Time &theta; is <span class="daySunSiderealTime"></span>&deg;</p>
+	<p>Today's sun Hour Angle is <span class="daySunHourAngle"></span>&deg;</p>
+	<p>Today's sun Azimuth is <span class="daySunAzimuth"></span>&deg;</p>
+	<p>Today's sun Altitude is <span class="daySunAltitude"></span>&deg;</p>
 	
 	<h3>Solar Transit</h3>
-	<p>Julian date of day's Solar Transit: <span id="daySolarTransit"></span></p>
+	<p>Julian date of day's Solar Transit: <span class="daySolarTransit"></span></p>
 	
 	<h2>Sunrise / Sunset</h2>
-	<p>Sunset Hour Angle for day: <span id="sunSetHourAngle"></span>&deg;</p>
-	<p>Sunrise J: <span id="sunRiseSolarTransit"></span></p>
-	<p>Sunset J: <span id="sunSetSolarTransit"></span></p>
+	<p>Sunset Hour Angle for day: <span class="sunSetHourAngle"></span>&deg;</p>
+	<p>Sunrise J: <span class="sunRiseSolarTransit"></span></p>
+	<p>Sunset J: <span class="sunSetSolarTransit"></span></p>
 </div>
 <footer>
 	<p>Mathieu Davy 2011</p>
