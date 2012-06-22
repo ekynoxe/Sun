@@ -1,0 +1,86 @@
+<p class="info">The date has been set to Today's date, and the place defaulted to London - Westminster, update the values below and hit "Calculate!" to get the info you want!</p>
+<form>
+<h2>Choose a date!</h2>
+	<ul>
+		<li><label for="day">Date</label><input type="text" id="day" size="2" name="day" placeholder="dd" /><input type="text" id="month" size="2" name="month" placeholder="mm" /><input type="text" id="year" size="4" name="year" placeholder="yyyy" /></li>
+	</ul>
+<h2>Set a place!</h2>
+	<ul>
+		<li><label for="lat">Latitude</label><input type="text" id="lat" name="lat" />&deg;N <small>(use negatives for S)</small></li>
+		<li><label for="lng">Longitude</label><input type="text" id="lng" name="lng" />&deg;E <small>(use negatives for W)</small></li>
+		<li><input id="calculate" type="submit" value="Calculate!" /></li>
+	</ul>
+</form>
+
+<h2>Quick results for <span class="day"></span></h2>
+<ul>
+	<li>Dawn: <span class="sunRiseNauticalTwilightDate"></span> UTC</li>
+	<li>Sunrise: <span class="nextCalendarDayRise"></span> UTC</li>
+	<li>Solar noon: <span class="daySolarTransitFull"></span> UTC</li>
+	<li>Sunset: <span class="nextCalendarDaySet"></span> UTC</li>
+	<li>Dusk: <span class="sunSetNauticalTwilightDate"></span> UTC</li>
+</ul>
+
+<h2>Sunrise / Sunset</h2>
+<p>Sunrise is: <span class="nextCalendarDayRise"></span> UTC</p>
+<p>Sunset is: <span class="nextCalendarDaySet"></span> UTC</p>
+
+<h2>Twilights</h2>
+<h3>Sunrise</h3>
+<p>Astronomical twilight is: <span class="sunRiseAstronomicalTwilightDate"></span> UTC</p>
+<p>Nautical twilight is: <span class="sunRiseNauticalTwilightDate"></span> UTC</p>
+<p>Civil twilight is: <span class="sunRiseCivilTwilightDate"></span> UTC</p>
+<h3>Sunset</h3>
+<p>Civil twilight is: <span class="sunSetCivilTwilightDate"></span> UTC</p>
+<p>Nautical twilight is: <span class="sunSetNauticalTwilightDate"></span> UTC</p>
+<p>Astronomical twilight is: <span class="sunSetAstronomicalTwilightDate"></span> UTC</p>
+
+
+<h2>Solar transit for today</h2>
+<p>At: <span class="daySolarTransitFull"></span> UTC</p>
+
+<h2>Sunrise / Sunset</h2>
+<p>Sunrise is: <span class="nextCalendarDayRise"></span> UTC</p>
+<p>Sunset is: <span class="nextCalendarDaySet"></span> UTC</p>
+
+<h2>Twilights</h2>
+<h3>Sunrise</h3>
+<p>Astronomical twilight is: <span class="sunRiseAstronomicalTwilightDate"></span> UTC</p>
+<p>Nautical twilight is: <span class="sunRiseNauticalTwilightDate"></span> UTC</p>
+<p>Civil twilight is: <span class="sunRiseCivilTwilightDate"></span> UTC</p>
+<h3>Sunset</h3>
+<p>Civil twilight is: <span class="sunSetCivilTwilightDate"></span> UTC</p>
+<p>Nautical twilight is: <span class="sunSetNauticalTwilightDate"></span> UTC</p>
+<p>Astronomical twilight is: <span class="sunSetAstronomicalTwilightDate"></span> UTC</p>
+
+<h2>Calculation details</h2>
+<h3>Time</h3>
+<p>Today Chronological Julian Day Number is <span class="dayCJDN"></span></p>
+
+<h3>Mean Anomaly</h3>
+<p>Today's mean anomaly is <span class="dayMeanAnomaly"></span>&deg;</p>
+
+<h3>Equation of Center</h3>
+<p>Today's equation of center C is <span class="dayEquationCenter"></span>&deg;</p>
+<p>Today's true anomaly &nu; is <span class="dayTrueAnomaly"></span>&deg;</p>
+
+<h3>Ecliptical Coordinates</h3>
+<p>Today's sun ecliptical longitude &lambda; is <span class="daySunEclipticLon"></span>&deg;</p>
+
+<h3>Equatorial Coordinates</h3>
+<p>Today's sun Right Ascension &alpha; is <span class="daySunRightAscension"></span>&deg;</p>
+<p>Today's sun Declination &delta; is <span class="daySunDeclination"></span>&deg;</p>
+
+<h3>The Observer</h3>
+<p>Today's sun Sidereal Time &theta; is <span class="daySunSiderealTime"></span>&deg;</p>
+<p>Today's sun Hour Angle is <span class="daySunHourAngle"></span>&deg;</p>
+<p>Today's sun Azimuth is <span class="daySunAzimuth"></span>&deg;</p>
+<p>Today's sun Altitude is <span class="daySunAltitude"></span>&deg;</p>
+
+<h3>Solar Transit</h3>
+<p>Julian date of day's Solar Transit: <span class="daySolarTransit"></span></p>
+
+<h2>Sunrise / Sunset</h2>
+<p>Sunset Hour Angle for day: <span class="sunSetHourAngle"></span>&deg;</p>
+<p>Sunrise J: <span class="sunRiseSolarTransit"></span></p>
+<p>Sunset J: <span class="sunSetSolarTransit"></span></p>
