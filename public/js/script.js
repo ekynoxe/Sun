@@ -53,24 +53,24 @@ var u = new Utils(),
             $('.daySunAltitude').html(u.td(theSun.daySunAltitude));
             $('.daySolarTransit').html(theSun.daySolarTransit);
             $('.daySolarTransitFull').html(u.f(theSun.JD2FullGregorian(theSun.daySolarTransit)));
-            $('ul .daySolarTransitFull').html(u.t(theSun.JD2FullGregorian(theSun.daySolarTransit)));
+            $('ul .daySolarTransitFull').html(u.t(u.tz(theSun.JD2FullGregorian(theSun.daySolarTransit)), false));
 
             $('.sunSetHourAngle').html(theSun.sunSetHourAngle);
             $('.sunSetSolarTransit').html(theSun.sunSetSolarTransit);
             $('.nextCalendarDaySet').html(u.f(theSun.sunSetDateParts));
-            $('ul .nextCalendarDaySet').html(u.t(theSun.sunSetDateParts));
+            $('ul .nextCalendarDaySet').html(u.t(u.tz(theSun.sunSetDateParts), false));
             $('.sunRiseSolarTransit').html(theSun.sunRiseSolarTransit);
             $('.nextCalendarDayRise').html(u.f(theSun.sunRiseDateParts));
-            $('ul .nextCalendarDayRise').html(u.t(theSun.sunRiseDateParts));
+            $('ul .nextCalendarDayRise').html(u.t(u.tz(theSun.sunRiseDateParts), false));
             
             // TWILIGHTS
             
             $('.sunSetCivilTwilightDate').html(u.f(theSun.sunSetCivilTwilightDateParts));
             $('.sunRiseCivilTwilightDate').html(u.f(theSun.sunRiseCivilTwilightDateParts));
             $('.sunSetNauticalTwilightDate').html(u.f(theSun.sunSetNauticalTwilightDateParts));
-            $('ul .sunSetNauticalTwilightDate').html(u.t(theSun.sunSetNauticalTwilightDateParts));
+            $('ul .sunSetNauticalTwilightDate').html(u.t(u.tz(theSun.sunSetNauticalTwilightDateParts), false));
             $('.sunRiseNauticalTwilightDate').html(u.f(theSun.sunRiseNauticalTwilightDateParts));
-            $('ul .sunRiseNauticalTwilightDate').html(u.t(theSun.sunRiseNauticalTwilightDateParts));
+            $('ul .sunRiseNauticalTwilightDate').html(u.t(u.tz(theSun.sunRiseNauticalTwilightDateParts), false));
             $('.sunSetAstronomicalTwilightDate').html(u.f(theSun.sunSetAstronomicalTwilightDateParts));
             $('.sunRiseAstronomicalTwilightDate').html(u.f(theSun.sunRiseAstronomicalTwilightDateParts));
             

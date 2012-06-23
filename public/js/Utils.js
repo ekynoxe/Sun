@@ -2,14 +2,14 @@
  * Utils: Class containing date and trigonometry functions
  * @Author: Mathieu Davy - Ekynoxe, 2012 http://ekynoxe.com
  */
-function Utils(){}
+function Utils () {}
 
 Utils.prototype = {
     /**
      * Format a date from an array [day, month, year, hours, minutes, seconds] to 'DD/MM/YYYY at hh:mm:ss'
      * @param: Array d
      */
-    f: function(d) {
+    f: function (d) {
         return  u.pad2(d[0]) + '/' +
                 u.pad2(d[1]) + '/' +
                 u.pad2(d[2]) + ' at ' +
@@ -21,21 +21,38 @@ Utils.prototype = {
     /**
      * Format a date from an array [day, month, year, hours, minutes, seconds] to 'hh:mm:ss'
      * @param: Array d
+     * @param: Boolean showSeconds
      */
-    t: function(d) {
+    t: function (d, showSeconds) {
         return  u.pad2(d[3]) + ':' +
-                u.pad2(d[4]) + ':' +
-                u.pad2(d[5]);
+                u.pad2(d[4]) +
+                (showSeconds ? ':' + u.pad2(d[5]) : "");
     },
 
     /**
      * Format a date from an array [day, month, year, hours, minutes, seconds] to 'DD/MM/YYYY'
      * @param: Array d
      */
-    d: function(d) {
+    d: function (d) {
         return  u.pad2(d[0]) + '/' +
                 u.pad2(d[1]) + '/' +
                 u.pad2(d[2]);
+    },
+
+    /**
+     * Add timezone offset to the date parts
+     * @param: Array d
+     */
+    tz: function (d) {
+        var now = new Date(),
+            offset = now.getTimezoneOffset(),
+            hours = Math.floor(offset / 60),
+            minutes = offset % 60;
+
+        d[3] -= hours;
+        d[4] -= minutes;
+
+        return d;
     },
 
     /**
