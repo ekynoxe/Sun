@@ -16,9 +16,9 @@ var u = new Utils(),
             london: { // Westminster
                 lat: 51.508,
                 lng: -0.125
-            }
+            },
+            coordsMessage: "The date has been set to Today's date, and the place defaulted to London - Westminster.<br/.>Update the values below and hit \"Calculate!\" to get the info you want!"
         },
-        defaultCoordsMessage: "The date has been set to Today's date, and the place defaulted to London - Westminster.<br/.>Update the values below and hit \"Calculate!\" to get the info you want!",
         getDateParts: function (){
             return [parseInt($('input:text[name=day]').val(), 10), parseInt($('input:text[name=month]').val(), 10), parseInt($('input:text[name=year]').val(), 10)];
         },
@@ -39,7 +39,7 @@ var u = new Utils(),
                     
             theSun.calculateAll();
             
-            $('.day').html(theSun.day[0] + ' / ' + theSun.day[1] + ' / ' + theSun.day[2]);
+            // $('.day').html(theSun.day[0] + ' / ' + theSun.day[1] + ' / ' + theSun.day[2]);
             $('.dayCJDN').html(theSun.dayCJDN);
             $('.dayMeanAnomaly').html(u.td(theSun.dayMeanAnomaly));
             $('.dayEquationCenter').html(u.td(theSun.dayEquationCenter));
@@ -106,8 +106,7 @@ var u = new Utils(),
 
             sunApp.setFields(new Date(), sunApp.defaults.london);
             
-            $('#box').prepend($('<p class="info">').html(errMsg + sunApp.defaultCoordsMessage));
-            $('.userinputs').show();
+            $('#box').prepend($('<p class="info">').html(errMsg + sunApp.defaults.coordsMessage));
             sunApp.calculateTimes();
         },
 
@@ -136,12 +135,23 @@ var u = new Utils(),
         handle_geolocation_query: function (position) {
             sunApp.setFields(new Date(), {lat: position.coords.latitude, lng: position.coords.longitude});
             sunApp.calculateTimes();
+        },
+
+        initDetailsSection: function () {
+            $('<a href="#" class="toggleDetails"><span>show details</span><span style="display: none;">hide details</span></a>').insertBefore('.details').click(sunApp.toggleDetails);
+            $('.details').hide();
+        },
+
+        toggleDetails: function () {
+            $(this).children('span').toggle();
+            $('.details').toggle(400);
+            return false;
         }
     };
 
 $(function(){
-    $('.userinputs').hide();
     sunApp.initiate_geolocation();
+    sunApp.initDetailsSection();
 
     $("#calculate").click(function(){sunApp.calculateTimes(); return false;});
 });

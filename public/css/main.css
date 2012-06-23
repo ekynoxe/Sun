@@ -285,6 +285,27 @@ footer{
 			margin: 5px 0;
 		}
 
+#box ul.results {
+	text-align: center;
+	width: 100%;
+}
+#box ul.results li {
+	display: inline-block;
+	text-align: center;
+	padding: 0;
+	width: 19%;
+}
+#box ul.results li p {
+	background: transparent url('img/sprite.png');
+	height: 65px;
+	text-indent: -9999px;
+}
+#box ul.results li.dawn p { background-position: 0px 0; }
+#box ul.results li.sunrise p { background-position: -79px 0; }
+#box ul.results li.noon p { background-position: -158px 0; }
+#box ul.results li.sunset p { background-position: -238px 0; }
+#box ul.results li.dusk p { background-position: -316px 0; }
+
 td, th{
    border-right: 1px solid #ccc;
    padding: 5px;

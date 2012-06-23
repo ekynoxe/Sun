@@ -34,6 +34,8 @@ function Sun(day, lat, lng){
     this.lng = -lng * dtr;
     this.day = day;
     this.constants = this.CONST;
+    this.sunrise ={};
+    this.sunset ={};
 }
 
 Sun.prototype = {
@@ -43,14 +45,14 @@ Sun.prototype = {
      */
     gregorian2CJDN: function(gregorianDate) {
         var c0 = Math.floor((gregorianDate[1]-3)/12),
-                x4 = gregorianDate[2] + c0,
-                x3 = Math.floor(x4/100),
-                x2 = x4 - 100*x3,
-                x1 = gregorianDate[1] - 12*c0 -3,
-                J0 = 1721120,
-                J1 = Math.floor(146097*x3/4),
-                J2 = Math.floor(36525*x2/100),
-                J3 = Math.floor((153*x1 + 2)/5);
+            x4 = gregorianDate[2] + c0,
+            x3 = Math.floor(x4/100),
+            x2 = x4 - 100*x3,
+            x1 = gregorianDate[1] - 12*c0 -3,
+            J0 = 1721120,
+            J1 = Math.floor(146097*x3/4),
+            J2 = Math.floor(36525*x2/100),
+            J3 = Math.floor((153*x1 + 2)/5);
                 
         return J1 + J2 + J3 + gregorianDate[0] - 1 + J0;
     },
@@ -61,15 +63,15 @@ Sun.prototype = {
      */
     CJDN2gregorian: function(J) {
         var y3 = J - 1721120,
-                x3 = Math.floor((4*y3 + 3)/146097),
-                y2 = y3 - Math.floor(146097*x3/4),
-                x2 = Math.floor((100*y2 + 99)/36525),
-                y1 = y2 - Math.floor(36525*x2/100),
-                x1 = Math.floor((5*y1 + 1)/153),
-                c0 = Math.floor((x1 + 3)/12),
-                j = 100*x3 + x2 + c0,
-                m = x1 - 12*c0 + 3,
-                d = y1 - Math.floor((153*x1 - 3)/5);
+            x3 = Math.floor((4*y3 + 3)/146097),
+            y2 = y3 - Math.floor(146097*x3/4),
+            x2 = Math.floor((100*y2 + 99)/36525),
+            y1 = y2 - Math.floor(36525*x2/100),
+            x1 = Math.floor((5*y1 + 1)/153),
+            c0 = Math.floor((x1 + 3)/12),
+            j = 100*x3 + x2 + c0,
+            m = x1 - 12*c0 + 3,
+            d = y1 - Math.floor((153*x1 - 3)/5);
                 
         return [d, m, j];
     },
@@ -80,16 +82,16 @@ Sun.prototype = {
      */
     JD2FullGregorian: function(JD) {
         var gregorian = this.CJDN2gregorian(JD),
-                julianDate = JD + 0.5,
-                day = Math.floor(julianDate),
-                dayDiff = julianDate - day,
-                hoursDiff = dayDiff*24,
-                hours = Math.floor(hoursDiff),
-                minDiff = (hoursDiff - hours)*60,
-                min = Math.floor(minDiff),
-                sec = Math.floor((minDiff - min)*60);
-                
-                return [Math.round(gregorian[0]), gregorian[1], gregorian[2], hours, min, sec];
+            julianDate = JD + 0.5,
+            day = Math.floor(julianDate),
+            dayDiff = julianDate - day,
+            hoursDiff = dayDiff*24,
+            hours = Math.floor(hoursDiff),
+            minDiff = (hoursDiff - hours)*60,
+            min = Math.floor(minDiff),
+            sec = Math.floor((minDiff - min)*60);
+            
+        return [Math.round(gregorian[0]), gregorian[1], gregorian[2], hours, min, sec];
     },
 
     /**
@@ -98,9 +100,9 @@ Sun.prototype = {
      */
     julian2CJDN: function(julianDate) {
         var c0 = Math.floor((julianDate[1] - 3)/12),
-                J0 = 1721117,
-                J1 = Math.floor(1461*(julianDate[2] + c0)/4),
-                J2 = Math.floor((153*julianDate[1] - 1836*c0 - 457)/5);
+            J0 = 1721117,
+            J1 = Math.floor(1461*(julianDate[2] + c0)/4),
+            J2 = Math.floor((153*julianDate[1] - 1836*c0 - 457)/5);
                 
         return J1 + J2 + julianDate[0] + J0;
     },
@@ -111,13 +113,13 @@ Sun.prototype = {
      */
     CJDN2julian: function(J) {
         var y2 = J - 1721118,
-                x2 = Math.floor((4*y2 + 3)/1461),
-                z2 = y2 - Math.floor(1461*x2/4),
-                x1 = Math.floor((5*z2 + 2)/153),
-                c0 = Math.floor((x1 + 3)/12),
-                j = x2 + c0,
-                m = x1 - 12*c0 + 3,
-                d = z2 - Math.floor((153*x1 - 3)/5);
+            x2 = Math.floor((4*y2 + 3)/1461),
+            z2 = y2 - Math.floor(1461*x2/4),
+            x1 = Math.floor((5*z2 + 2)/153),
+            c0 = Math.floor((x1 + 3)/12),
+            j = x2 + c0,
+            m = x1 - 12*c0 + 3,
+            d = z2 - Math.floor((153*x1 - 3)/5);
                 
         return [d, m, j];
     },
@@ -136,8 +138,8 @@ Sun.prototype = {
      */
     calcEquationCenter: function(M) {
         return  CONST.C1 * Math.sin(M) +
-                    CONST.C2 * Math.sin(2 * M) +
-                    CONST.C3 * Math.sin(3 * M);
+                CONST.C2 * Math.sin(2 * M) +
+                CONST.C3 * Math.sin(3 * M);
     },
 
     /**
@@ -212,12 +214,12 @@ Sun.prototype = {
      */
     calcSolarTransit: function(J, Htarget, lng, lambda) {
         var nStar = (J - CONST.J2000 - CONST.J0) - (Htarget + lng)/(2*Math.PI),
-                n = Math.round(nStar),
-                JStar = CONST.J2000 + CONST.J0 + ((Htarget + lng) / (2*Math.PI)) + n,
-                M = this.dayMeanAnomaly,
-                C = this.calcEquationCenter(M),
-                LSun = M + CONST.P + Math.PI,
-                JTransit = this.calcTransit(JStar, M, LSun);
+            n = Math.round(nStar),
+            JStar = CONST.J2000 + CONST.J0 + ((Htarget + lng) / (2*Math.PI)) + n,
+            M = this.dayMeanAnomaly,
+            C = this.calcEquationCenter(M),
+            LSun = M + CONST.P + Math.PI,
+            JTransit = this.calcTransit(JStar, M, LSun);
                 
         return JTransit;
     },
@@ -240,8 +242,8 @@ Sun.prototype = {
      */
     decimalHoursToHMS: function(hours) {
         var H = Math.floor(hours),
-                M = Math.floor((hours-H)*60),
-                S = Math.floor((((hours-H)*60)-M)*60);
+            M = Math.floor((hours-H)*60),
+            S = Math.floor((((hours-H)*60)-M)*60);
                 
         return [H, M, S];
     },
@@ -313,6 +315,5 @@ Sun.prototype = {
         this.sunRiseNauticalTwilightDateParts = this.JD2FullGregorian(this.sunRiseNauticalTwilightSolarTransit);
         this.sunSetAstronomicalTwilightDateParts = this.JD2FullGregorian(this.sunSetAstronomicalTwilightSolarTransit);
         this.sunRiseAstronomicalTwilightDateParts = this.JD2FullGregorian(this.sunRiseAstronomicalTwilightSolarTransit);
-        
     }
 };

@@ -10,7 +10,12 @@ Utils.prototype = {
      * @param: Array d
      */
     f: function(d) {
-        return u.pad2(d[0]) + '/' + u.pad2(d[1]) + '/' + u.pad2(d[2]) + ' at ' + u.pad2(d[3]) + ':' + u.pad2(d[4]) + ':' + u.pad2(d[5]);
+        return  u.pad2(d[0]) + '/' +
+                u.pad2(d[1]) + '/' +
+                u.pad2(d[2]) + ' at ' +
+                u.pad2(d[3]) + ':' +
+                u.pad2(d[4]) + ':' +
+                u.pad2(d[5]);
     },
 
     /**
@@ -18,7 +23,9 @@ Utils.prototype = {
      * @param: Array d
      */
     t: function(d) {
-        return u.pad2(d[3]) + ':' + u.pad2(d[4]) + ':' + u.pad2(d[5]);
+        return  u.pad2(d[3]) + ':' +
+                u.pad2(d[4]) + ':' +
+                u.pad2(d[5]);
     },
 
     /**
@@ -26,7 +33,9 @@ Utils.prototype = {
      * @param: Array d
      */
     d: function(d) {
-        return u.pad2(d[0]) + '/' + u.pad2(d[1]) + '/' + u.pad2(d[2]);
+        return  u.pad2(d[0]) + '/' +
+                u.pad2(d[1]) + '/' +
+                u.pad2(d[2]);
     },
 
     /**
