@@ -1,6 +1,7 @@
 /**
- * Sun: Calulating sunrise, sunset and later on equinoxes
- * This code is based on the work of Dr Louis Strous at
+ * sunApp: Using my Sun library to calulating sunrise, sunset and later on equinoxes
+ *  https://github.com/ekynoxe/Sun/blob/master/public/js/Sun.js
+ * The library code is based on the work of Dr Louis Strous at
  *      http://www.astro.uu.nl/~strous/AA/en/index.html
  * Specifically, these calculations implement his equations and
  *      use his constant values found at
@@ -8,57 +9,16 @@
  * @Author: Mathieu Davy - Ekynoxe, 2011 http://ekynoxe.com
  */
 
-var $=$,
-    Sun = Sun,
-    // Utilities
-    u={
-        // Format a date from an array [day, month, year, hours, minutes, seconds] to 'DD/MM/YYYY at hh:mm:ss'
-        f: function(d) {
-            return u.pad2(d[0]) + '/' + u.pad2(d[1]) + '/' + u.pad2(d[2]) + ' at ' + u.pad2(d[3]) + ':' + u.pad2(d[4]) + ':' + u.pad2(d[5]);
+var u = new Utils(),
+    // Specific code for the Sun front-end application
+    sunApp = {
+        defaults: {
+            london: { // Westminster
+                lat: 51.508,
+                lng: -0.125
+            }
         },
-        // Format a date from an array [day, month, year, hours, minutes, seconds] to 'hh:mm:ss'
-        t: function(d) {
-            return u.pad2(d[3]) + ':' + u.pad2(d[4]) + ':' + u.pad2(d[5]);
-        },
-        // Format a date from an array [day, month, year, hours, minutes, seconds] to 'DD/MM/YYYY'
-        d: function(d) {
-            return u.pad2(d[0]) + '/' + u.pad2(d[1]) + '/' + u.pad2(d[2]);
-        },
-        /**
-        * Returns the gregorian day, month and year
-         * @param: Date d
-         */
-        dayParts: function(d) {
-            return [d.getDate(), d.getMonth()+1, d.getFullYear()];
-        },
-        
-        /**
-         * Returns the gregorian day, month and year in UTC format
-         * @param: Date d
-         */
-        dayUTCParts: function(d) {
-            return [d.getUTCDate(), d.getUTCMonth()+1, d.getUTCFullYear()];
-        },
-        td: function(r) {
-            return (r/Math.PI*180)%360;
-        },
-        pad2: function (number){
-            return (number < 10 ? '0' : '') + number;
-        }
-    },
-    defaults = {
-        london: {
-        // decimal below correspond to: 51°30'26"N 0°7'39"W
-            lat: 51.508,
-            lng: -0.125
-        },
-        netherlands: {
-        // numbers below correspond to: 52°00'00"N 0°5'00"E, for testing against resource site date example
-            lat: 52,
-            lng: 5
-        }
-    },
-    mySun = {
+        defaultCoordsMessage: "The date has been set to Today's date, and the place defaulted to London - Westminster.<br/.>Update the values below and hit \"Calculate!\" to get the info you want!",
         getDateParts: function (){
             return [parseInt($('input:text[name=day]').val(), 10), parseInt($('input:text[name=month]').val(), 10), parseInt($('input:text[name=year]').val(), 10)];
         },
@@ -73,8 +33,8 @@ var $=$,
             $('input:text[name=lng]').val(coords.lng);
         },
         calculateTimes: function() {
-            var dateParts = mySun.getDateParts(),
-                    coordinates = mySun.getCoordinates(),
+            var dateParts = sunApp.getDateParts(),
+                    coordinates = sunApp.getCoordinates(),
                     theSun = new Sun(dateParts, coordinates.lat, coordinates.lng);
                     
             theSun.calculateAll();
@@ -114,12 +74,74 @@ var $=$,
             $('.sunSetAstronomicalTwilightDate').html(u.f(theSun.sunSetAstronomicalTwilightDateParts));
             $('.sunRiseAstronomicalTwilightDate').html(u.f(theSun.sunRiseAstronomicalTwilightDateParts));
             
+        },
+
+        initiate_geolocation: function () {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sunApp.handle_geolocation_query, sunApp.handle_errors);
+            } else {
+                yqlgeo.get('visitor', sunApp.normalize_yql_response);
+            }
+        },
+
+        handle_errors: function (error) {
+            var errMsg = "";
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errMsg = "You did not share geolocation data. ";
+                break;
+
+                case error.POSITION_UNAVAILABLE:
+                    errMsg = "We could not detect current position. ";
+                break;
+
+                case error.TIMEOUT:
+                    errMsg = "Retrieving your current position timed out. ";
+                break;
+
+                default:
+                    errMsg = "An unknown error happened. ";
+                break;
+            }
+
+            sunApp.setFields(new Date(), sunApp.defaults.london);
+            
+            $('#box').prepend($('<p class="info">').html(errMsg + sunApp.defaultCoordsMessage));
+            $('.userinputs').show();
+            sunApp.calculateTimes();
+        },
+
+        normalize_yql_response: function (response) {
+            if (response.error) {
+                var error = { code : 0 };
+                sunApp.handle_error(error);
+                return;
+            }
+
+            var position = {
+                coords : {
+                    latitude: response.place.centroid.latitude,
+                    longitude: response.place.centroid.longitude
+                },
+                address : {
+                    city: response.place.locality2.content,
+                    region: response.place.admin1.content,
+                    country: response.place.country.content
+                }
+            };
+
+            sunApp.handle_geolocation_query(position);
+        },
+
+        handle_geolocation_query: function (position) {
+            sunApp.setFields(new Date(), {lat: position.coords.latitude, lng: position.coords.longitude});
+            sunApp.calculateTimes();
         }
     };
 
 $(function(){
-    mySun.setFields(new Date(), defaults.london);
-    // mySun.setFields(new Date(2004, 3, 1),defaults.netherlands);
-    mySun.calculateTimes();
-    $("#calculate").click(function(){mySun.calculateTimes(); return false;});
+    $('.userinputs').hide();
+    sunApp.initiate_geolocation();
+
+    $("#calculate").click(function(){sunApp.calculateTimes(); return false;});
 });
