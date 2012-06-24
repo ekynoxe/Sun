@@ -19,6 +19,10 @@ var u = new Utils(),
             },
             coordsMessage: "The date has been set to Today's date, and the place defaulted to London - Westminster.<br/.>Update the values below and hit \"Calculate!\" to get the info you want!"
         },
+        init: function () {
+            var geo = new Geolocation(this.handle_geolocation_success, this.handle_geolocation_errors);
+            geo.init();
+        },
         getDateParts: function (){
             return [parseInt($('input:text[name=day]').val(), 10), parseInt($('input:text[name=month]').val(), 10), parseInt($('input:text[name=year]').val(), 10)];
         },
@@ -76,15 +80,7 @@ var u = new Utils(),
             
         },
 
-        initiate_geolocation: function () {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(sunApp.handle_geolocation_query, sunApp.handle_errors);
-            } else {
-                yqlgeo.get('visitor', sunApp.normalize_yql_response);
-            }
-        },
-
-        handle_errors: function (error) {
+        handle_geolocation_errors: function (error) {
             var errMsg = "";
             switch(error.code) {
                 case error.PERMISSION_DENIED:
@@ -110,29 +106,7 @@ var u = new Utils(),
             sunApp.calculateTimes();
         },
 
-        normalize_yql_response: function (response) {
-            if (response.error) {
-                var error = { code : 0 };
-                sunApp.handle_error(error);
-                return;
-            }
-
-            var position = {
-                coords : {
-                    latitude: response.place.centroid.latitude,
-                    longitude: response.place.centroid.longitude
-                },
-                address : {
-                    city: response.place.locality2.content,
-                    region: response.place.admin1.content,
-                    country: response.place.country.content
-                }
-            };
-
-            sunApp.handle_geolocation_query(position);
-        },
-
-        handle_geolocation_query: function (position) {
+        handle_geolocation_success: function (position) {
             sunApp.setFields(new Date(), {lat: position.coords.latitude, lng: position.coords.longitude});
             sunApp.calculateTimes();
         },
@@ -150,7 +124,7 @@ var u = new Utils(),
     };
 
 $(function(){
-    sunApp.initiate_geolocation();
+    sunApp.init();
     sunApp.initDetailsSection();
 
     $("#calculate").click(function(){sunApp.calculateTimes(); return false;});
