@@ -119,13 +119,14 @@ select{font-size: 100%;}
 .timeline .dusk  { background-color: #f57e20; }
 
 .timeline .marker {
-	background-color: #ff0;
+	background: transparent url('img/sprite.png');
+	background-position: -180px -334px;
 	position: absolute;
 	left: 50%;
 	height: 20px;
 	top: 10px;
-	margin-left: -10px;
-	width: 20px;
+	margin-left: -20px;
+	width: 400px;
 }
 
 ul.results {

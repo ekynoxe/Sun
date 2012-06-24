@@ -30,6 +30,8 @@ var u = new Utils(),
             $('ul .nextCalendarDayRise').html(u.t(u.tz(theSun.sunRiseDateParts), false));
             $('ul .sunSetCivilTwilightDate').html(u.t(u.tz(theSun.sunSetCivilTwilightDateParts), false));
             $('ul .sunRiseCivilTwilightDate').html(u.t(u.tz(theSun.sunRiseCivilTwilightDateParts), false));
+
+            sunApp.setProgressBarWidths(theSun);
         },
 
         initiate_geolocation: function () {
@@ -96,6 +98,27 @@ var u = new Utils(),
             $(this).children('span').toggle();
             $('.details').toggle(400);
             return false;
+        },
+
+        setProgressBarWidths: function (theSun) {
+            var morningMinutes = sunApp.minutesFromMidnight(theSun.sunRiseCivilTwilightDateParts),
+                dawnMinutes = sunApp.minutesFromMidnight(theSun.sunRiseDateParts) - morningMinutes,
+                dayMinutes = sunApp.minutesFromMidnight(theSun.sunSetDateParts) - sunApp.minutesFromMidnight(theSun.sunRiseDateParts),
+                duskMinutes = sunApp.minutesFromMidnight(theSun.sunSetCivilTwilightDateParts) - sunApp.minutesFromMidnight(theSun.sunSetDateParts),
+                eveningMinutes = 1440 - sunApp.minutesFromMidnight(theSun.sunSetCivilTwilightDateParts),
+                now = new Date();
+            
+            $(".timeline .morning").css({width: (morningMinutes / 14.4) + "%"});
+            $(".timeline .dawn").css({width: (dawnMinutes / 14.4) + "%"});
+            $(".timeline .day").css({width: (dayMinutes / 14.4) + "%"});
+            $(".timeline .dusk").css({width: (duskMinutes / 14.4) + "%"});
+            $(".timeline .evening").css({width: (eveningMinutes / 14.4) + "%"});
+
+            $(".timeline .marker").css({left: ((now.getHours() * 60 + now.getMinutes()) / 14.4) + "%"});
+        },
+
+        minutesFromMidnight: function (d) {
+            return  d[3] * 60 + d[4];
         }
     };
 
