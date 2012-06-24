@@ -13,9 +13,9 @@ var u = new Utils(),
     now = new Date(),
     // Specific code for the Sun front-end application
     sunApp = {
-        day: now.getDay(),
-        month: now.getMonth(),
-        year: now.getYear(),
+        day: now.getDate(),
+        month: now.getMonth() + 1,
+        year: now.getFullYear(),
         // Defaulting to London Westminster
         lat: 51.508,
         lng: -0.125,
@@ -28,8 +28,8 @@ var u = new Utils(),
             $('ul .daySolarTransitFull').html(u.t(u.tz(theSun.JD2FullGregorian(theSun.daySolarTransit)), false));
             $('ul .nextCalendarDaySet').html(u.t(u.tz(theSun.sunSetDateParts), false));
             $('ul .nextCalendarDayRise').html(u.t(u.tz(theSun.sunRiseDateParts), false));
-            $('ul .sunSetNauticalTwilightDate').html(u.t(u.tz(theSun.sunSetNauticalTwilightDateParts), false));
-            $('ul .sunRiseNauticalTwilightDate').html(u.t(u.tz(theSun.sunRiseNauticalTwilightDateParts), false));
+            $('ul .sunSetCivilTwilightDate').html(u.t(u.tz(theSun.sunSetCivilTwilightDateParts), false));
+            $('ul .sunRiseCivilTwilightDate').html(u.t(u.tz(theSun.sunRiseCivilTwilightDateParts), false));
         },
 
         initiate_geolocation: function () {

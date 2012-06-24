@@ -66,11 +66,11 @@ var u = new Utils(),
             // TWILIGHTS
             
             $('.sunSetCivilTwilightDate').html(u.f(theSun.sunSetCivilTwilightDateParts));
+            $('ul .sunSetCivilTwilightDate').html(u.t(u.tz(theSun.sunSetCivilTwilightDateParts), false));
             $('.sunRiseCivilTwilightDate').html(u.f(theSun.sunRiseCivilTwilightDateParts));
+            $('ul .sunRiseCivilTwilightDate').html(u.t(u.tz(theSun.sunRiseCivilTwilightDateParts), false));
             $('.sunSetNauticalTwilightDate').html(u.f(theSun.sunSetNauticalTwilightDateParts));
-            $('ul .sunSetNauticalTwilightDate').html(u.t(u.tz(theSun.sunSetNauticalTwilightDateParts), false));
             $('.sunRiseNauticalTwilightDate').html(u.f(theSun.sunRiseNauticalTwilightDateParts));
-            $('ul .sunRiseNauticalTwilightDate').html(u.t(u.tz(theSun.sunRiseNauticalTwilightDateParts), false));
             $('.sunSetAstronomicalTwilightDate').html(u.f(theSun.sunSetAstronomicalTwilightDateParts));
             $('.sunRiseAstronomicalTwilightDate').html(u.f(theSun.sunRiseAstronomicalTwilightDateParts));
             
