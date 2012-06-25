@@ -103,6 +103,7 @@ select{font-size: 100%;}
 	position: relative;
 	height: 30px;
 	margin: 0;
+	overflow: hidden;
 	width: 100%;
 }
 .timeline .night,
@@ -126,7 +127,7 @@ select{font-size: 100%;}
 	height: 20px;
 	top: 10px;
 	margin-left: -20px;
-	width: 400px;
+	width: 40px;
 }
 
 ul.results {

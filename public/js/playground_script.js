@@ -6,7 +6,7 @@
  * Specifically, these calculations implement his equations and
  *      use his constant values found at
  *      http://www.astro.uu.nl/~strous/AA/en/reken/zonpositie.html
- * @Author: Mathieu Davy - Ekynoxe, 2011 http://ekynoxe.com
+ * @Author: Mathieu Davy - Ekynoxe, 2011-2012 http://ekynoxe.com
  */
 
 var u = new Utils(),
@@ -20,10 +20,17 @@ var u = new Utils(),
         lat: 51.508,
         lng: -0.125,
         defaultsCoordsMessage: "The date has been set to Today's date, and the place defaulted to London - Westminster.<br/.>Update the values below and hit \"Calculate!\" to get the info you want!",
+        timer: null,
+        
         init: function () {
             var geo = new Geolocation(this.handle_geolocation_success, this.handle_geolocation_errors);
             geo.init();
         },
+
+        destroy: function () {
+            sunApp.timer = null;
+        },
+
         calculateTimes: function() {
             var theSun = new Sun([sunApp.day, sunApp.month, sunApp.year], sunApp.lat, sunApp.lng);
             
@@ -36,6 +43,8 @@ var u = new Utils(),
             $('ul .sunRiseCivilTwilightDate').html(u.t(u.tz(theSun.sunRiseCivilTwilightDateParts), false));
 
             sunApp.setProgressBarWidths(theSun);
+            sunApp.moveMarker();
+            sunApp.animate();
         },
 
         handle_geolocation_errors: function (error) {
@@ -87,8 +96,17 @@ var u = new Utils(),
             $(".timeline .day").css({width: (dayMinutes / 14.4) + "%"});
             $(".timeline .dusk").css({width: (duskMinutes / 14.4) + "%"});
             $(".timeline .evening").css({width: (eveningMinutes / 14.4) + "%"});
+        },
 
-            $(".timeline .marker").css({left: ((now.getHours() * 60 + now.getMinutes()) / 14.4) + "%"});
+        animate: function () {
+            sunApp.timer = setInterval(sunApp.moveMarker, 10000);
+        },
+
+        moveMarker: function () {
+            var now = new Date();
+                left = ((now.getHours() * 60 + now.getMinutes()) / 14.4) + "%";
+            $(".timeline .marker").css({'left': left});
+            now = null;
         },
 
         minutesFromMidnight: function (d) {
@@ -99,3 +117,6 @@ var u = new Utils(),
 $(function(){
     sunApp.init();
 });
+$(window).unload(
+    sunApp.destroy
+);
