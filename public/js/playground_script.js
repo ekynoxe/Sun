@@ -11,112 +11,11 @@
 
 var u = new Utils(),
     now = new Date(),
-    // Specific code for the Sun front-end application
-    sunApp = {
-        day: now.getDate(),
-        month: now.getMonth() + 1,
-        year: now.getFullYear(),
-        // Defaulting to London Westminster
-        lat: 51.508,
-        lng: -0.125,
-        defaultsCoordsMessage: "The date has been set to Today's date, and the place defaulted to London - Westminster.<br/.>Update the values below and hit \"Calculate!\" to get the info you want!",
-        timer: null,
-        
-        init: function () {
-            var geo = new Geolocation(this.handle_geolocation_success, this.handle_geolocation_errors);
-            geo.init();
-        },
+    s = new SunApp();
 
-        destroy: function () {
-            sunApp.timer = null;
-        },
-
-        calculateTimes: function() {
-            var theSun = new Sun([sunApp.day, sunApp.month, sunApp.year], sunApp.lat, sunApp.lng);
-            
-            theSun.calculateAll();
-            
-            $('ul .daySolarTransitFull').html(u.t(u.tz(theSun.JD2FullGregorian(theSun.daySolarTransit)), false));
-            $('ul .nextCalendarDaySet').html(u.t(u.tz(theSun.sunSetDateParts), false));
-            $('ul .nextCalendarDayRise').html(u.t(u.tz(theSun.sunRiseDateParts), false));
-            $('ul .sunSetCivilTwilightDate').html(u.t(u.tz(theSun.sunSetCivilTwilightDateParts), false));
-            $('ul .sunRiseCivilTwilightDate').html(u.t(u.tz(theSun.sunRiseCivilTwilightDateParts), false));
-
-            sunApp.setProgressBarWidths(theSun);
-            sunApp.moveMarker();
-            sunApp.animate();
-        },
-
-        handle_geolocation_errors: function (error) {
-            var errMsg = "";
-            switch(error.code) {
-                case error.PERMISSION_DENIED:
-                    errMsg = "You did not share geolocation data. ";
-                break;
-
-                case error.POSITION_UNAVAILABLE:
-                    errMsg = "We could not detect current position. ";
-                break;
-
-                case error.TIMEOUT:
-                    errMsg = "Retrieving your current position timed out. ";
-                break;
-
-                default:
-                    errMsg = "An unknown error happened. ";
-                break;
-            }
-
-            $('#box').prepend($('<p class="info">').html(errMsg + sunApp.defaultsCoordsMessage));
-            sunApp.calculateTimes();
-        },
-
-        handle_geolocation_success: function (position) {
-            sunApp.lat = position.coords.latitude;
-            sunApp.lng = position.coords.longitude;
-            sunApp.calculateTimes();
-        },
-
-        toggleDetails: function () {
-            $(this).children('span').toggle();
-            $('.details').toggle(400);
-            return false;
-        },
-
-        setProgressBarWidths: function (theSun) {
-            var morningMinutes = sunApp.minutesFromMidnight(theSun.sunRiseCivilTwilightDateParts),
-                dawnMinutes = sunApp.minutesFromMidnight(theSun.sunRiseDateParts) - morningMinutes,
-                dayMinutes = sunApp.minutesFromMidnight(theSun.sunSetDateParts) - sunApp.minutesFromMidnight(theSun.sunRiseDateParts),
-                duskMinutes = sunApp.minutesFromMidnight(theSun.sunSetCivilTwilightDateParts) - sunApp.minutesFromMidnight(theSun.sunSetDateParts),
-                eveningMinutes = 1440 - sunApp.minutesFromMidnight(theSun.sunSetCivilTwilightDateParts),
-                now = new Date();
-            
-            $(".timeline .morning").css({width: (morningMinutes / 14.4) + "%"});
-            $(".timeline .dawn").css({width: (dawnMinutes / 14.4) + "%"});
-            $(".timeline .day").css({width: (dayMinutes / 14.4) + "%"});
-            $(".timeline .dusk").css({width: (duskMinutes / 14.4) + "%"});
-            $(".timeline .evening").css({width: (eveningMinutes / 14.4) + "%"});
-        },
-
-        animate: function () {
-            sunApp.timer = setInterval(sunApp.moveMarker, 10000);
-        },
-
-        moveMarker: function () {
-            var now = new Date();
-                left = ((now.getHours() * 60 + now.getMinutes()) / 14.4) + "%";
-            $(".timeline .marker").css({'left': left});
-            now = null;
-        },
-
-        minutesFromMidnight: function (d) {
-            return  d[3] * 60 + d[4];
-        }
-    };
-
-$(function(){
-    sunApp.init();
+$(function () {
+    s.init();
 });
 $(window).unload(
-    sunApp.destroy
+    s.destroy
 );

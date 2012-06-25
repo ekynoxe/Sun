@@ -20,7 +20,7 @@ var u = new Utils(),
             coordsMessage: "The date has been set to Today's date, and the place defaulted to London - Westminster.<br/.>Update the values below and hit \"Calculate!\" to get the info you want!"
         },
         init: function () {
-            var geo = new Geolocation(this.handle_geolocation_success, this.handle_geolocation_errors);
+            var geo = new Geolocation(this.handleGeolocationSuccess, this.handleGeolocationErrors);
             geo.init();
         },
         getDateParts: function (){
@@ -80,7 +80,7 @@ var u = new Utils(),
             
         },
 
-        handle_geolocation_errors: function (error) {
+        handleGeolocationErrors: function (error) {
             var errMsg = "";
             switch(error.code) {
                 case error.PERMISSION_DENIED:
@@ -106,7 +106,7 @@ var u = new Utils(),
             sunApp.calculateTimes();
         },
 
-        handle_geolocation_success: function (position) {
+        handleGeolocationSuccess: function (position) {
             sunApp.setFields(new Date(), {lat: position.coords.latitude, lng: position.coords.longitude});
             sunApp.calculateTimes();
         },
