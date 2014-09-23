@@ -154,6 +154,58 @@ ul.results li.noon p { background-position: -158px 0; }
 ul.results li.sunset p { background-position: -238px 0; }
 ul.results li.dusk p { background-position: -316px 0; }
 
+#testingarea {
+	border: 1px solid #ccc;
+	margin: 30px 2.5%;
+	padding: 2.5%;
+	width: 90%;
+}
+#testingarea h1 {
+	font-size: 2em;
+}
+#testingarea h2 {
+	font-size: 1.6em;
+}
+#testingarea p {
+	margin: 15px 0;
+}
+
+#testingarea.night {
+	background-color: #333;
+	color: #ddd;
+}
+#testingarea.night h1,
+#testingarea.night h2{
+	color: #fff;
+}
+
+#testingarea.dusk {
+	background-color: #EDBB32;
+	color: #fff;
+}
+#testingarea.dusk h1,
+#testingarea.dusk h2{
+	color: #fff;
+}
+
+#testingarea.dawn {
+	background-color: #ED9632;
+	color: #fff;
+}
+#testingarea.dawn h1,
+#testingarea.dawn h2{
+	color: #fff;
+}
+
+#testingarea.day {
+	background-color: #fff;
+	color: #333;
+}
+#testingarea.day h1,
+#testingarea.day h2{
+	color: #333;
+}
+
 footer{
 	color: #999;
 	font-size: 80%;
